@@ -7,8 +7,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from supabase import create_client
-from datetime import datetime
-
 # =========================
 # 1. Konfigurasi Supabase
 # =========================
@@ -122,6 +120,7 @@ tab1, tab2, = st.tabs(["📈 Overview","🏢 By Institution"])
 
 # ===== Tab 1: Overview =====
 with tab1:
+    # Stat cards
     colA, colB, colC = st.columns(3)
     stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
     stat_card("Pengajuan Awal", filtered_df["pengajuan awal"].sum(skipna=True), "📌")
@@ -129,7 +128,7 @@ with tab1:
     stat_card("Total Dibatalkan", filtered_df["dibatalkan"].sum(skipna=True), "❌")
     stat_card("Selesai", filtered_df["selesai"].sum(skipna=True), "✅")
     
-    # Bar chart jumlah pendaftar per bulan (hanya di Overview)
+    # Chart Overview
     df_month = (
         filtered_df
         .groupby(filtered_df["date certification"].dt.to_period("M"))["pendaftar"]
@@ -138,17 +137,19 @@ with tab1:
     )
     df_month["date certification"] = df_month["date certification"].astype(str)
     fig_overview = px.bar(
-        df_month, 
-        x="date certification", 
-        y="Jumlah", 
-        title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN", 
+        df_month,
+        x="date certification",
+        y="Jumlah",
+        text="Jumlah",
+        title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN",
         color="Jumlah",
-        text="Jumlah"
+        height=500
     )
+    fig_overview.update_traces(textposition="outside")
     st.plotly_chart(fig_overview, use_container_width=True)
 
     # Info box / expander untuk penjelasan
-    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
         Bagian Overview menampilkan **ringkasan keseluruhan data sertifikasi** sesuai rentang tanggal yang dipilih.
 
@@ -168,17 +169,15 @@ with tab1:
 with tab2:
     st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
     
-    # Hitung jumlah pendaftar per instansi dari data yang sudah difilter
     top_instansi = (
         filtered_df.groupby("instansi")["pendaftar"]
         .sum()
         .reset_index()
         .sort_values("pendaftar", ascending=False)
-        .head(5)  # ambil 5 teratas
-        .sort_values("pendaftar", ascending=True)  # agar bar chart horizontal naik dari bawah ke atas
+        .head(5)
+        .sort_values("pendaftar", ascending=True)
     )
     
-    # Buat bar chart horizontal
     fig_instansi = px.bar(
         top_instansi,
         x="pendaftar",
@@ -188,10 +187,8 @@ with tab2:
         title="Top 5 Instansi Berdasarkan Jumlah Pendaftar",
         color_discrete_sequence=["#80c6ff"]
     )
-    
     fig_instansi.update_traces(textposition="inside")
     fig_instansi.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
-    
     st.plotly_chart(fig_instansi, use_container_width=True)
 
     # Info box / expander untuk penjelasan
