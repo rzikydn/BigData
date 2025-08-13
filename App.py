@@ -142,7 +142,8 @@ with tab1:
         x="date certification", 
         y="Jumlah", 
         title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN", 
-        color="Jumlah"
+        color="Jumlah",
+        text="Jumlah"
     )
     st.plotly_chart(fig_overview, use_container_width=True)
 
