@@ -149,7 +149,7 @@ with tab1:
     st.plotly_chart(fig_overview, use_container_width=True)
 
     # Info box / expander untuk penjelasan
-with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
         Bagian Overview menampilkan **ringkasan keseluruhan data sertifikasi** sesuai rentang tanggal yang dipilih.
 
