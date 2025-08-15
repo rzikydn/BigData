@@ -141,7 +141,7 @@ with tab1:
         x="date certification",
         y="Jumlah",
         text="Jumlah",
-        title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN",
+        title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN (BY DATA BASYS)",
         color="Jumlah",
         height=500
     )
