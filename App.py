@@ -268,7 +268,7 @@ selected_dates = st.date_input(
 col1 = st.columns(1)
 instansi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
 
-selected_instansi = col1.selectbox("Instansi", instansi_list)
+selected_instansi = col1.selectbox("nama sertifikasi", instansi_list)
 
     
 
