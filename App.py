@@ -116,7 +116,7 @@ def stat_card(label, value, icon):
 # =========================
 # 8. Tabs Layout
 # =========================
-tab1, tab2, = st.tabs(["📈 Overview","🏢 By Institution", "📝By Notion"])
+tab1, tab2, tab3, = st.tabs(["📈 Overview","🏢 By Institution", "📝By Notion"])
 
 # ===== Tab 1: Overview =====
 with tab1:
