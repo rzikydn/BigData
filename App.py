@@ -231,8 +231,8 @@ with tab3:
     st.subheader("💡VISUALISASI DATA")
     # Stat cards
     colA, colB, colC = st.columns(3)
-    stat_card("Total Notion", filtered_df_notion["peserta"].sum(skipna=True), "⭐")
-    stat_card("Total Pendaftar", filtered_df_bigdata["pendaftar"].sum(skipna=True), "👥")
+    stat_card("Total Notion", df_notion["peserta"].sum(skipna=True), "⭐")
+    stat_card("Total Pendaftar",df_bigdata["pendaftar"].sum(skipna=True), "👥")
 
     # Chart Overview
     df_month = (
