@@ -231,13 +231,13 @@ with tab3:
     st.subheader("💡VISUALISASI DATA")
     # Stat cards
     colA, colB, colC = st.columns(3)
-    stat_card("Total Notion", filtered_df["peserta"].sum(skipna=True), "⭐")
-    stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
+    stat_card("Total Notion", filtered_df_notion["peserta"].sum(skipna=True), "⭐")
+    stat_card("Total Pendaftar", filtered_df_bigdata["pendaftar"].sum(skipna=True), "👥")
 
     # Chart Overview
     df_month = (
-        filtered_df
-        .groupby(filtered_df["date certification"].dt.to_period("M"))["peserta"]
+        df_notion
+        .groupby(df_notion["date certification"].dt.to_period("M"))["peserta"]
         .sum()
         .reset_index(name="Jumlah")
     )
