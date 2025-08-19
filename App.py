@@ -229,15 +229,41 @@ with tab2:
 # ===== Tab 3: By Notion =====
 with tab3:
     st.subheader("💡VISUALISASI DATA NOTION")
+
     # Stat cards
     colA, colB, colC = st.columns(3)
     stat_card("Total Notion", df_notion["peserta"].sum(skipna=True), "⭐")
-    stat_card("Total Pendaftar",df_bigdata["pendaftar"].sum(skipna=True), "👥")
+    stat_card("Total Pendaftar", df_bigdata["pendaftar"].sum(skipna=True), "👥")
 
-    # Chart Overview
+    # Rentang tanggal khusus Notion
+    min_date = df_notion["date certification"].min().date()
+    max_date = df_notion["date certification"].max().date()
+    selected_dates = st.date_input(
+        "📅 Pilih Rentang Tanggal (Notion):",
+        value=(min_date, max_date),
+        min_value=min_date,
+        max_value=max_date
+    )
+
+    # Dropdown filter nama sertifikasi
+    col1, = st.columns(1)
+    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+    selected_sertifikasi = col1.selectbox("Nama Sertifikasi", sertifikasi_list)
+
+    # Filter Data Notion
+    filtered_notion = df_notion[
+        (df_notion["date certification"].dt.date >= selected_dates[0]) &
+        (df_notion["date certification"].dt.date <= selected_dates[1])
+    ]
+    if selected_sertifikasi != "All":
+        filtered_notion = filtered_notion[
+            filtered_notion["nama sertifikasi"] == selected_sertifikasi
+        ]
+
+    # Chart Overview Notion
     df_month = (
-        df_notion
-        .groupby(df_notion["date certification"].dt.to_period("M"))["peserta"]
+        filtered_notion
+        .groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
         .sum()
         .reset_index(name="Jumlah")
     )
@@ -247,40 +273,13 @@ with tab3:
         x="date certification",
         y="Jumlah",
         text="Jumlah",
-        title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN (BY DATA BASYS)",
+        title="TOTAL PESERTA NOTION PER BULAN",
         color="Jumlah",
         height=500
     )
     fig_overview.update_traces(textposition="outside")
     st.plotly_chart(fig_overview, use_container_width=True)
 
-# Rentang tanggal
-min_date = df_notion["date certification"].min().date()
-max_date = df_notion["date certification"].max().date()
-selected_dates = st.date_input(
-    "📅 Pilih Rentang Tanggal :",
-    value=(min_date, max_date),
-    min_value=min_date,
-    max_value=max_date
-)
-
-# Membuat kolom layout untuk dropdown
-col1, = st.columns(1)
-
-# Mengambil isi unik dari kolom 'nama sertifikasi' pada df_notion
-sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
-
-# Dropdown untuk memilih sertifikasi
-selected_sertifikasi = col1.selectbox("Nama Sertifikasi", sertifikasi_list)
-
-# Filter data notion berdasarkan pilihan sertifikasi
-filtered_notion = df_notion[
-    (df_notion["date certification"].dt.date >= selected_dates[0]) &
-    (df_notion["date certification"].dt.date <= selected_dates[1])
-]
-
-if selected_sertifikasi != "All":
-    filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
 
     
