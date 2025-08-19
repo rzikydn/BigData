@@ -65,10 +65,6 @@ st.cache_data.clear()
 df_bigdata = load_bigdata()
 df_notion = load_notion()
 
-if df.empty:
-    st.warning("Tidak ada data di tabel 'bigdata'.")
-    st.stop()
-
 # =========================
 # 4. Filter Global
 # =========================
