@@ -270,6 +270,18 @@ instansi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique()
 
 selected_instansi = col1.selectbox("nama sertifikasi", instansi_list)
 
+
+# =========================
+# Filter Data
+# =========================
+df_notion[
+    (df_notion["date certification"].dt.date >= selected_dates[0]) &
+    (df_notion["date certification"].dt.date <= selected_dates[1])
+]
+
+if selected_instansi != "All":
+    df_notion = df_notion[df_notion["nama sertifikasi"] == selected_instansi]
+
     
 
 
