@@ -61,7 +61,8 @@ def load_notion():
 # 3. Load Data
 # =========================
 st.cache_data.clear()
-df = load_data_all()
+df = load_bigdata()
+df = load_notion()
 
 if df.empty:
     st.warning("Tidak ada data di tabel 'bigdata'.")
