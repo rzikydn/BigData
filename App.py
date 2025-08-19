@@ -65,6 +65,10 @@ st.cache_data.clear()
 df_bigdata = load_bigdata()
 df_notion = load_notion()
 
+if df.empty:
+    st.warning("Tidak ada data di tabel 'bigdata'.")
+    st.stop()
+
 # =========================
 # 4. Filter Global
 # =========================
@@ -72,8 +76,8 @@ st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
 
 # Rentang tanggal
-min_date = df["date certification"].min().date()
-max_date = df["date certification"].max().date()
+min_date = df_bigdata["date certification"].min().date()
+max_date = df_bigdata["date certification"].max().date()
 selected_dates = st.date_input(
     "📅 Pilih Rentang Tanggal :",
     value=(min_date, max_date),
