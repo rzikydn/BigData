@@ -264,25 +264,24 @@ selected_dates = st.date_input(
     max_value=max_date
 )
 
-# dropdown notion
+# Membuat kolom layout untuk dropdown
 col1, = st.columns(1)
-instansi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
-selected_instansi = col1.selectbox("Nama Sertifikasi", instansi_list)
 
-# =========================
-# Filter Data By Notion
-# =========================
-# 1. filter tanggal
+# Mengambil isi unik dari kolom 'nama sertifikasi' pada df_notion
+sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+
+# Dropdown untuk memilih sertifikasi
+selected_sertifikasi = col1.selectbox("Nama Sertifikasi", sertifikasi_list)
+
+# Filter data notion berdasarkan pilihan sertifikasi
 filtered_notion = df_notion[
     (df_notion["date certification"].dt.date >= selected_dates[0]) &
     (df_notion["date certification"].dt.date <= selected_dates[1])
 ]
 
-# 2. filter nama sertifikasi jika tidak memilih "All"
-if selected_instansi != "All":
-    filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_instansi]
+if selected_sertifikasi != "All":
+    filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
-stat_card("Total Peserta Notion", filtered_notion["peserta"].sum(skipna=True), "⭐")
 
     
 
