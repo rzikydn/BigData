@@ -228,7 +228,7 @@ with tab2:
 
 # ===== Tab 3: By Notion =====
 with tab3:
-    st.subheader("💡VISUALISASI DATA")
+    st.subheader("💡VISUALISASI DATA NOTION")
     # Stat cards
     colA, colB, colC = st.columns(3)
     stat_card("Total Notion", df_notion["peserta"].sum(skipna=True), "⭐")
@@ -253,6 +253,23 @@ with tab3:
     )
     fig_overview.update_traces(textposition="outside")
     st.plotly_chart(fig_overview, use_container_width=True)
+
+# Rentang tanggal
+min_date = df_notion["date certification"].min().date()
+max_date = df_notion["date certification"].max().date()
+selected_dates = st.date_input(
+    "📅 Pilih Rentang Tanggal :",
+    value=(min_date, max_date),
+    min_value=min_date,
+    max_value=max_date
+)
+
+# Dropdown jenis sertifikasi & instansi
+col1 = st.columns(1)
+instansi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+
+selected_instansi = col1.selectbox("Instansi", instansi_list)
+
     
 
 
