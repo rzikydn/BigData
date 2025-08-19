@@ -279,9 +279,6 @@ filtered_notion = df_notion[
     (df_notion["date certification"].dt.date <= selected_dates[1])
 ]
 
-if selected_sertifikasi != "All":
-    filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
-
 
     
 
