@@ -83,8 +83,8 @@ selected_dates = st.date_input(
 
 # Dropdown jenis sertifikasi & instansi
 col1, col2 = st.columns(2)
-jenis_list = ["All"] + sorted(df["jenis sertifikasi"].dropna().unique())
-instansi_list = ["All"] + sorted(df["instansi"].dropna().unique())
+jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
+instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
 
 selected_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
 selected_instansi = col2.selectbox("Instansi", instansi_list)
@@ -92,9 +92,9 @@ selected_instansi = col2.selectbox("Instansi", instansi_list)
 # =========================
 # 5. Filter Data
 # =========================
-filtered_df = df[
-    (df["date certification"].dt.date >= selected_dates[0]) &
-    (df["date certification"].dt.date <= selected_dates[1])
+filtered_df = df_bigdata[
+    (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
+    (df_bigdata["date certification"].dt.date <= selected_dates[1])
 ]
 
 if selected_jenis != "All":
