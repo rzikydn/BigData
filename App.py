@@ -17,7 +17,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # =========================
 # 2. Fungsi Load Semua Data dari Supabase dengan Paging (table bigdata)
 # =========================
-def load_data_all():
+def load_bigdata():
     all_data = []
     offset = 0
     page_size = 1000  # ambil 1000 baris per request
@@ -39,7 +39,7 @@ def load_data_all():
 # =========================
 # Fungsi Load Semua Data dari Supabase dengan Paging (table notion)
 # =========================
-def load_data_all():
+def load_notion():
     all_data = []
     offset = 0
     page_size = 1000  # ambil 1000 baris per request
@@ -55,8 +55,6 @@ def load_data_all():
     # Pastikan kolom tanggal dalam format datetime
     df["date certification"] = pd.to_datetime(df["date certification"])
     return df
-
-
 
 
 # =========================
