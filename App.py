@@ -116,7 +116,7 @@ def stat_card(label, value, icon):
 # =========================
 # 8. Tabs Layout
 # =========================
-tab1, tab2, = st.tabs(["📈 Overview","🏢 By Institution"])
+tab1, tab2, = st.tabs(["📈 Overview","🏢 By Institution", "📝By Notion"])
 
 # ===== Tab 1: Overview =====
 with tab1:
@@ -203,6 +203,36 @@ with tab2:
 
         Dengan visualisasi ini, pengguna dapat langsung melihat instansi dengan partisipasi tertinggi dan memantau tren perubahan jumlah pendaftar dari waktu ke waktu.
         """)
+
+
+# ===== Tab 3: By Notion =====
+with tab3:
+    st.subheader("💡VISUALISASI DATA")
+    # Stat cards
+    colA, colB, colC = st.columns(3)
+    stat_card("Total Notion", filtered_df["peserta"].sum(skipna=True), "⭐")
+    stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
+
+    # Chart Overview
+    df_month = (
+        filtered_df
+        .groupby(filtered_df["date certification"].dt.to_period("M"))["peserta"]
+        .sum()
+        .reset_index(name="Jumlah")
+    )
+    df_month["date certification"] = df_month["date certification"].astype(str)
+    fig_overview = px.bar(
+        df_month,
+        x="date certification",
+        y="Jumlah",
+        text="Jumlah",
+        title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN (BY DATA BASYS)",
+        color="Jumlah",
+        height=500
+    )
+    fig_overview.update_traces(textposition="outside")
+    st.plotly_chart(fig_overview, use_container_width=True)
+    
 
 
 # =========================
