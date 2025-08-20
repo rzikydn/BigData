@@ -66,30 +66,6 @@ df_bigdata = load_bigdata()
 df_notion = load_notion()
 
 # =========================
-# 4. Filter Global
-# =========================
-st.title("📊 DASHBOARD SERTIFIKASI")
-st.markdown("---")
-
-# Rentang tanggal
-min_date = df_bigdata["date certification"].min().date()
-max_date = df_bigdata["date certification"].max().date()
-selected_dates = st.date_input(
-    "📅 Pilih Rentang Tanggal :",
-    value=(min_date, max_date),
-    min_value=min_date,
-    max_value=max_date
-)
-
-# Dropdown jenis sertifikasi & instansi
-col1, col2 = st.columns(2)
-jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
-instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
-
-selected_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
-selected_instansi = col2.selectbox("Instansi", instansi_list)
-
-# =========================
 # 5. Filter Data
 # =========================
 filtered_df = df_bigdata[
@@ -141,6 +117,17 @@ tab1, tab2, tab3, = st.tabs(["📈 Overview","🏢 By Institution", "📝By Noti
 
 # ===== Tab 1: Overview =====
 with tab1:
+    
+    # --- FILTER GLOBAL (KHUSUS UNTUK TAB INI) ---
+    min_date = df_bigdata["date certification"].min().date()
+    max_date = df_bigdata["date certification"].max().date()
+    selected_dates = st.date_input(
+        "📅 Pilih Rentang Tanggal :", 
+        value=(min_date, max_date), 
+        min_value=min_date, 
+        max_value=max_date
+    )
+    
     # Stat cards
     colA, colB, colC = st.columns(3)
     stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
@@ -149,6 +136,16 @@ with tab1:
     stat_card("Total Dibatalkan", filtered_df["dibatalkan"].sum(skipna=True), "❌")
     stat_card("Selesai", filtered_df["selesai"].sum(skipna=True), "✅")
     
+    # --- FILTER DATA ---
+    filtered_df = df_bigdata[
+        (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
+        (df_bigdata["date certification"].dt.date <= selected_dates[1])
+    ]
+    if selected_jenis != "All":
+        filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == selected_jenis]
+    if selected_instansi != "All":
+        filtered_df = filtered_df[filtered_df["instansi"] == selected_instansi]
+
     # Chart Overview
     df_month = (
         filtered_df
@@ -188,8 +185,34 @@ with tab1:
 
 # ===== Tab 2: By Institution =====
 with tab2:
-    st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
     
+    # --- FILTER GLOBAL (KHUSUS UNTUK TAB INI) ---
+    min_date = df_bigdata["date certification"].min().date()
+    max_date = df_bigdata["date certification"].max().date()
+    selected_dates = st.date_input(
+        "📅 Pilih Rentang Tanggal :", 
+        value=(min_date, max_date), 
+        min_value=min_date, 
+        max_value=max_date
+    )
+
+    col1, col2 = st.columns(2)
+    jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
+    instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
+    selected_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
+    selected_instansi = col2.selectbox("Instansi", instansi_list)
+
+    # --- FILTER DATA ---
+    filtered_df = df_bigdata[
+        (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
+        (df_bigdata["date certification"].dt.date <= selected_dates[1])
+    ]
+    if selected_jenis != "All":
+        filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == selected_jenis]
+    if selected_instansi != "All":
+        filtered_df = filtered_df[filtered_df["instansi"] == selected_instansi]
+    
+    st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
     top_instansi = (
         filtered_df.groupby("instansi")["pendaftar"]
         .sum()
