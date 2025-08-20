@@ -199,72 +199,61 @@ with tab2:
 
 
 
-# ===== Tab 3: By Institution =====
-with tab3:
-    min_date = df_bigdata["date certification"].min().date()
-    max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (institution) :", (min_date, max_date), min_date, max_date, key="date institution")
+# ===== Tab 2: By Notion =====
+with tab2:
+    st.subheader("💡VISUALISASI DATA NOTION")
 
-    jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
-    instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
-    col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis institution")
-    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi institution")
+    # Filter tanggal
+    min_date = df_notion["date certification"].min().date()
+    max_date = df_notion["date certification"].max().date()
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):",
+                             (min_date, max_date), min_date, max_date, key="date notion")
 
-    filtered_df = df_bigdata[
+    # Filter sertifikasi
+    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected notion")
+
+    filtered_notion = df_notion[
+        (df_notion["date certification"].dt.date >= sel_date[0]) &
+        (df_notion["date certification"].dt.date <= sel_date[1])
+    ]
+    if selected_sertifikasi != "All":
+        filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
+
+    filtered_bigdata_by_notion = df_bigdata[
         (df_bigdata["date certification"].dt.date >= sel_date[0]) &
         (df_bigdata["date certification"].dt.date <= sel_date[1])
     ]
-    if sel_jenis != "All":
-        filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == sel_jenis]
-    if sel_instansi != "All":
-        filtered_df = filtered_df[filtered_df["instansi"] == sel_instansi]
-    filtered_df["status"] = filtered_df.apply(get_status, axis=1)
 
-    st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
-    top_instansi = (
-        filtered_df.groupby("instansi")["pendaftar"].sum()
-        .reset_index().sort_values("pendaftar", ascending=False).head(5)
-        .sort_values("pendaftar", ascending=True)
+    # Stat card
+    colA, colB = st.columns(2)
+    stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
+    stat_card("Total Selesai (By Basys)", filtered_bigdata_by_notion["selesai"].sum(), "✅")
+
+    # Chart Notion vs BigData
+    df_notion_month = (
+        filtered_notion
+        .groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
+        .sum().reset_index(name="peserta_notion")
     )
+    df_bigdata_month = (
+        filtered_bigdata_by_notion
+        .groupby(filtered_bigdata_by_notion["date certification"].dt.to_period("M"))["selesai"]
+        .sum().reset_index(name="selesai")
+    )
+    df_compare = pd.merge(df_notion_month, df_bigdata_month,
+                          left_on="date certification", right_on="date certification",
+                          how="outer").fillna(0)
+    df_compare["date certification"] = df_compare["date certification"].astype(str)
 
-    #== Bagian Chart ==#
+    fig_line = px.line(
+        df_compare,
+        x="date certification",
+        y=["peserta_notion", "selesai"],
+        markers=True,
+        title="Trend Peserta Notion vs Selesai BigData"
+    )
+    st.plotly_chart(fig_line, use_container_width=True)
 
-    fig_lolli = go.Figure()
-    fig_lolli.add_trace(go.Scatter(
-    x=top_instansi["pendaftar"],
-    y=top_instansi["instansi"],
-    mode='markers',
-    marker=dict(size=12),
-    name='Jumlah Pendaftar'
-))
-    fig_lolli.add_trace(go.Scatter(
-    x=top_instansi["pendaftar"],
-    y=top_instansi["instansi"],
-    mode='lines',
-    line=dict(color='gray', width=2),
-    showlegend=False
-))
-    fig_lolli.update_layout(
-    title="Top 5 Instansi Berdasarkan Pendaftar (Lollipop Chart)",
-    xaxis_title="Jumlah Pendaftar",
-    yaxis_title="",
-    showlegend=False
-)
-st.plotly_chart(fig_lolli, use_container_width=True)
-
-
-    # Info box / expander untuk penjelasan
-with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
-        st.markdown("""
-        Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
-
-        Manfaat informasi ini:
-        1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
-        2. Membantu penyelenggara memahami distribusi peserta per instansi.
-        3. Mempermudah perencanaan alokasi sumber daya dan layanan untuk instansi tertentu.
-
-        Dengan visualisasi ini, pengguna dapat langsung melihat instansi dengan partisipasi tertinggi dan memantau tren perubahan jumlah pendaftar dari waktu ke waktu.
-        """)
 
 # End of Dashboard
