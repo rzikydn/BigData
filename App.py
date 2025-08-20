@@ -235,7 +235,7 @@ with tab3:
 
     #== Bagian Chart ==#
     fig_lolli = go.Figure()
-fig_lolli.add_trace(go.Scatter(
+    fig_lolli.add_trace(go.Scatter(
     x=top_instansi["pendaftar"],
     y=top_instansi["instansi"],
     mode='markers',
