@@ -200,9 +200,8 @@ with tab2:
     with colA:
         stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
     with colB:
-        total_selesai_bigdata = df_bigdata["selesai"].sum()
+        total_selesai_bigdata = filtered_bigdata_same_date["selesai"].sum()
     stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
-
     # -------------------------
     # 6. Chart Notion vs BigData per bulan
     # -------------------------
