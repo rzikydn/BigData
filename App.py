@@ -259,7 +259,7 @@ filtered_df = df_bigdata[
 ]
 
 
-    top_instansi = (
+top_instansi = (
         filtered_df.groupby("instansi")["pendaftar"]
         .sum()
         .reset_index()
@@ -268,7 +268,7 @@ filtered_df = df_bigdata[
         .sort_values("pendaftar", ascending=True)
     )
     
-    fig_instansi = px.bar(
+fig_instansi = px.bar(
         top_instansi,
         x="pendaftar",
         y="instansi",
@@ -277,14 +277,15 @@ filtered_df = df_bigdata[
         title="Top 5 Instansi Berdasarkan Jumlah Pendaftar",
         color_discrete_sequence=["#80c6ff"]
     )
-    fig_instansi.update_traces(textposition="inside")
-    fig_instansi.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
-    st.plotly_chart(fig_instansi, use_container_width=True)
 
-    # Info box / expander untuk penjelasan
-    with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
-        st.markdown("""
-        Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
+fig_instansi.update_traces(textposition="inside")
+fig_instansi.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
+st.plotly_chart(fig_instansi, use_container_width=True)
+
+# Info box / expander untuk penjelasan
+with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
+    st.markdown("""
+    Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
 
         Manfaat informasi ini:
         1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
