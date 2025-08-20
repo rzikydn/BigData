@@ -165,16 +165,17 @@ with tab2:
         (df_bigdata["date certification"].dt.date <= sel_date[1])
     ]
 
+    stat_card("Total Selesai (By Basys)", filtered_bigdata_same_date["selesai"].sum(), "✅")
+
     # Stat card
     colA, colB = st.columns(2)
     stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
-    stat_card("Total Selesai (By Basys)", filtered_bigdata_by_notion["selesai"].sum(), "✅")
 
     # Chart Notion vs BigData
     df_notion_month = (
         filtered_notion
         .groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
-        .sum().reset_index(name="peserta_notion")
+        .sum().reset_index(name="pendaftar")
     )
     df_bigdata_month = (
         filtered_bigdata_by_notion
@@ -189,7 +190,7 @@ with tab2:
     fig_line = px.line(
         df_compare,
         x="date certification",
-        y=["peserta_notion", "selesai"],
+        y=["pendaftar", "selesai"],
         markers=True,
         title="Trend Peserta Notion vs Selesai BigData"
     )
