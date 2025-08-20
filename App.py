@@ -71,26 +71,25 @@ df_notion = load_notion()
 st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
 
-# Rentang tanggal global untuk Overview & By Institution
-#======#
+# Tanggal global untuk Overview & By Institution
+min_date = df_bigdata["date certification"].min().date()
+max_date = df_bigdata["date certification"].max().date()
 
-# Dropdown jenis sertifikasi & instansi
-col1, col2 = st.columns(2)
-jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
-instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
+# Panggil date_input
+selected_dates = st.date_input(
+    "📅 Pilih Rentang Tanggal :",
+    value=(min_date, max_date),
+    min_value=min_date,
+    max_value=max_date
+)
 
-selected_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
-selected_instansi = col2.selectbox("Instansi", instansi_list)
-
-# =========================
-# 5. Filter Data
-# =========================
-# Pastikan selected_dates selalu tuple (start, end)
+# 2. Pastikan selected_dates selalu tuple
 if isinstance(selected_dates, tuple):
     start_date, end_date = selected_dates
 else:
     start_date = end_date = selected_dates
 
+# 3. Filter data BigData
 filtered_df = df_bigdata[
     (df_bigdata["date certification"].dt.date >= start_date) &
     (df_bigdata["date certification"].dt.date <= end_date)
@@ -137,32 +136,47 @@ tab1, tab2, tab3, = st.tabs(["📈 Overview","📝By Notion", "🏢 By Instituti
 with tab1:
     
     #== Remtang Tanggal ==#
+    # Tanggal global untuk Overview & By Institution
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    selected_dates = st.date_input(
+
+# Panggil date_input
+selected_dates = st.date_input(
     "📅 Pilih Rentang Tanggal :",
     value=(min_date, max_date),
     min_value=min_date,
     max_value=max_date
 )
 
+# 2. Pastikan selected_dates selalu tuple
+if isinstance(selected_dates, tuple):
+    start_date, end_date = selected_dates
+else:
+    start_date = end_date = selected_dates
+
+# 3. Filter data BigData
+filtered_df = df_bigdata[
+    (df_bigdata["date certification"].dt.date >= start_date) &
+    (df_bigdata["date certification"].dt.date <= end_date)
+]
+
     # Stat cards
-    colA, colB, colC = st.columns(3)
-    stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
-    stat_card("Pengajuan Awal", filtered_df["pengajuan awal"].sum(skipna=True), "📌")
-    stat_card("On Progress", filtered_df["on progress"].sum(skipna=True), "⏳")
-    stat_card("Total Dibatalkan", filtered_df["dibatalkan"].sum(skipna=True), "❌")
-    stat_card("Selesai", filtered_df["selesai"].sum(skipna=True), "✅")
+olA, colB, colC = st.columns(3)
+stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
+stat_card("Pengajuan Awal", filtered_df["pengajuan awal"].sum(skipna=True), "📌")
+stat_card("On Progress", filtered_df["on progress"].sum(skipna=True), "⏳")
+stat_card("Total Dibatalkan", filtered_df["dibatalkan"].sum(skipna=True), "❌")
+stat_card("Selesai", filtered_df["selesai"].sum(skipna=True), "✅")
     
     # Chart Overview
-    df_month = (
+df_month = (
         filtered_df
         .groupby(filtered_df["date certification"].dt.to_period("M"))["pendaftar"]
         .sum()
         .reset_index(name="Jumlah")
     )
-    df_month["date certification"] = df_month["date certification"].astype(str)
-    fig_overview = px.bar(
+df_month["date certification"] = df_month["date certification"].astype(str)
+fig_overview = px.bar(
         df_month,
         x="date certification",
         y="Jumlah",
@@ -171,11 +185,11 @@ with tab1:
         color="Jumlah",
         height=500
     )
-    fig_overview.update_traces(textposition="outside")
-    st.plotly_chart(fig_overview, use_container_width=True)
+fig_overview.update_traces(textposition="outside")
+st.plotly_chart(fig_overview, use_container_width=True)
 
     # Info box / expander untuk penjelasan
-    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
+with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
         Bagian Overview menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal yang dipilih.
 
@@ -250,20 +264,30 @@ with tab3:
     st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
 
     #== bagian tanggal ==#
-    min_date = df_bigdata["date certification"].min().date()
-    max_date = df_bigdata["date certification"].max().date()
-    selected_dates = st.date_input(
+    # 1. Tanggal global untuk Overview & By Institution
+min_date = df_bigdata["date certification"].min().date()
+max_date = df_bigdata["date certification"].max().date()
+
+# Panggil date_input
+selected_dates = st.date_input(
     "📅 Pilih Rentang Tanggal :",
     value=(min_date, max_date),
     min_value=min_date,
     max_value=max_date
 )
 
-# Filter BigData sesuai tanggal global
+# 2. Pastikan selected_dates selalu tuple
+if isinstance(selected_dates, tuple):
+    start_date, end_date = selected_dates
+else:
+    start_date = end_date = selected_dates
+
+# 3. Filter data BigData
 filtered_df = df_bigdata[
-    (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
-    (df_bigdata["date certification"].dt.date <= selected_dates[1])
+    (df_bigdata["date certification"].dt.date >= start_date) &
+    (df_bigdata["date certification"].dt.date <= end_date)
 ]
+
 
 
 top_instansi = (
