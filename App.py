@@ -144,26 +144,32 @@ with tab2:
     st.subheader("💡VISUALISASI DATA NOTION")
 
     # Filter tanggal
-    min_date = df_notion["date certification"].min().date()
-    max_date = df_notion["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):",
-                             (min_date, max_date), min_value=min_date, max_value=max_date, key="date_notion")
+    min_date_notion = df_notion["date certification"].min().date()
+    max_date_notion = df_notion["date certification"].max().date()
+    sel_date_notion = st.date_input(
+        "📅 Pilih Rentang Tanggal (Notion):",
+        (min_date_notion, max_date_notion),
+        min_value=min_date_notion,
+        max_value=max_date_notion,
+        key="date_notion"
+    )
 
     # Filter sertifikasi
     sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
     selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected_notion")
 
+    # Filter Notion
     filtered_notion = df_notion[
-        (df_notion["date certification"].dt.date >= sel_date[0]) &
-        (df_notion["date certification"].dt.date <= sel_date[1])
+        (df_notion["date certification"].dt.date >= sel_date_notion[0]) &
+        (df_notion["date certification"].dt.date <= sel_date_notion[1])
     ]
     if selected_sertifikasi != "All":
         filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
     # Filter BigData hanya berdasarkan tanggal (tanpa filter jenis/instansi)
     filtered_bigdata_same_date = df_bigdata[
-        (df_bigdata["date certification"].dt.date >= sel_date[0]) &
-        (df_bigdata["date certification"].dt.date <= sel_date[1])
+        (df_bigdata["date certification"].dt.date >= sel_date_notion[0]) &
+        (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
     ]
 
     # Stat cards
@@ -180,14 +186,12 @@ with tab2:
         .sum()
         .reset_index(name="pendaftar")
     )
-
     df_bigdata_month = (
         filtered_bigdata_same_date
         .groupby(filtered_bigdata_same_date["date certification"].dt.to_period("M"))["selesai"]
         .sum()
         .reset_index(name="selesai")
     )
-
     df_compare = pd.merge(
         df_notion_month, df_bigdata_month,
         left_on="date certification", right_on="date certification",
@@ -204,42 +208,49 @@ with tab2:
     )
     st.plotly_chart(fig_line, use_container_width=True)
 
-
 # ===== Tab 3: By Institution =====
 with tab3:
     st.subheader("🏢 VISUALISASI DATA PER INSTANSI")
 
     # Filter tanggal
-    min_date = df_bigdata["date certification"].min().date()
-    max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Institution):",
-                             (min_date, max_date), min_date, max_date, key="date institution")
+    min_date_inst = df_bigdata["date certification"].min().date()
+    max_date_inst = df_bigdata["date certification"].max().date()
+    sel_date_inst = st.date_input(
+        "📅 Pilih Rentang Tanggal (Institution):",
+        (min_date_inst, max_date_inst),
+        min_value=min_date_inst,
+        max_value=max_date_inst,
+        key="date_institution"
+    )
 
     # Filter jenis dan instansi
-    jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
-    instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
+    jenis_list_inst = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
+    instansi_list_inst = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis institution")
-    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi institution")
+    sel_jenis_inst = col1.selectbox("Jenis Sertifikasi", jenis_list_inst, key="jenis_institution")
+    sel_instansi_inst = col2.selectbox("Instansi", instansi_list_inst, key="instansi_institution")
 
     # Filter data
-    filtered_df = df_bigdata[
-        (df_bigdata["date certification"].dt.date >= sel_date[0]) &
-        (df_bigdata["date certification"].dt.date <= sel_date[1])
+    filtered_df_inst = df_bigdata[
+        (df_bigdata["date certification"].dt.date >= sel_date_inst[0]) &
+        (df_bigdata["date certification"].dt.date <= sel_date_inst[1])
     ]
-    if sel_jenis != "All":
-        filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == sel_jenis]
-    if sel_instansi != "All":
-        filtered_df = filtered_df[filtered_df["instansi"] == sel_instansi]
-    filtered_df["status"] = filtered_df.apply(get_status, axis=1)
+    if sel_jenis_inst != "All":
+        filtered_df_inst = filtered_df_inst[filtered_df_inst["jenis sertifikasi"] == sel_jenis_inst]
+    if sel_instansi_inst != "All":
+        filtered_df_inst = filtered_df_inst[filtered_df_inst["instansi"] == sel_instansi_inst]
+    filtered_df_inst["status"] = filtered_df_inst.apply(get_status, axis=1)
 
-    # Stat card contoh (opsional)
-    stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(), "👥")
-    stat_card("Selesai", filtered_df["selesai"].sum(), "✅")
+    # Stat cards
+    colA, colB = st.columns(2)
+    with colA:
+        stat_card("Total Pendaftar", filtered_df_inst["pendaftar"].sum(), "👥")
+    with colB:
+        stat_card("Selesai", filtered_df_inst["selesai"].sum(), "✅")
 
     # Top 5 instansi
     top_instansi = (
-        filtered_df.groupby("instansi")["pendaftar"].sum()
+        filtered_df_inst.groupby("instansi")["pendaftar"].sum()
         .reset_index().sort_values("pendaftar", ascending=False).head(5)
         .sort_values("pendaftar", ascending=True)
     )
@@ -278,6 +289,7 @@ with tab3:
         2. Membantu penyelenggara memahami distribusi peserta per instansi.
         3. Mempermudah perencanaan alokasi sumber daya dan layanan untuk instansi tertentu.
         """)
+
 
 
 # End of Dashboard
