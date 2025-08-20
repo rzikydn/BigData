@@ -234,6 +234,7 @@ with tab3:
     )
 
     #== Bagian Chart ==#
+
     fig_lolli = go.Figure()
     fig_lolli.add_trace(go.Scatter(
     x=top_instansi["pendaftar"],
@@ -242,14 +243,14 @@ with tab3:
     marker=dict(size=12),
     name='Jumlah Pendaftar'
 ))
-fig_lolli.add_trace(go.Scatter(
+    fig_lolli.add_trace(go.Scatter(
     x=top_instansi["pendaftar"],
     y=top_instansi["instansi"],
     mode='lines',
     line=dict(color='gray', width=2),
     showlegend=False
 ))
-fig_lolli.update_layout(
+    fig_lolli.update_layout(
     title="Top 5 Instansi Berdasarkan Pendaftar (Lollipop Chart)",
     xaxis_title="Jumlah Pendaftar",
     yaxis_title="",
@@ -257,7 +258,8 @@ fig_lolli.update_layout(
 )
 st.plotly_chart(fig_lolli, use_container_width=True)
 
-# Info box / expander untuk penjelasan
+
+    # Info box / expander untuk penjelasan
 with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
         st.markdown("""
         Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
