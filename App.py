@@ -45,8 +45,10 @@ def load_notion():
         df["date certification"] = pd.to_datetime(df["date certification"])
     return df
 
+st.cache_data.clear()
+
 df_bigdata = load_bigdata()
-df_notion  = load_notion()
+df_notion = load_notion()
 
 # -------------------------------------------
 # 3. FILTER GLOBAL (HANYA UNTUK TAB 1 & TAB 2)
