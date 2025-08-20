@@ -81,7 +81,7 @@ tab1, tab2, tab3 = st.tabs(["📈 Overview", "🏢 By Institution", "📝 By Not
 with tab1:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal :", (min_date, max_date), min_date, max_date)
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Overview) :", (min_date, max_date), min_date, max_date)
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
@@ -123,7 +123,7 @@ with tab1:
 with tab2:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal :", (min_date, max_date), min_date, max_date)
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal (institution) :", (min_date, max_date), min_date, max_date)
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
