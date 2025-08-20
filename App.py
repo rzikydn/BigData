@@ -126,6 +126,7 @@ with tab2:
     stat_card("Total Peserta Notion", df_notion["peserta"].sum(), "⭐")
     stat_card("Total Pendaftar Bigdata", df_bigdata["pendaftar"].sum(), "👥")
 
+
     min_date = df_notion["date certification"].min().date()
     max_date = df_notion["date certification"].max().date()
     sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date, key="date notion")
