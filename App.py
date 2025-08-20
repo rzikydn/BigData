@@ -75,7 +75,7 @@ def get_status(row):
 # =========================
 st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
-tab1, tab2, tab3 = st.tabs(["📈 Overview", "🏢 By Institution", "📝 By Notion"])
+tab1, tab2, tab3 = st.tabs(["📈 Overview", "📝 By Notion", "🏢 By Institution"])
 
 # ===== Tab 1: Overview =====
 with tab1:
@@ -119,8 +119,40 @@ with tab1:
     fig_over.update_traces(textposition="outside")
     st.plotly_chart(fig_over, use_container_width=True)
 
-# ===== Tab 2: By Institution =====
+# ===== Tab 2: By Notion =====
 with tab2:
+    st.subheader("💡VISUALISASI DATA NOTION")
+    colA, colB, colC = st.columns(3)
+    stat_card("Total Peserta Notion", df_notion["peserta"].sum(), "⭐")
+    stat_card("Total Pendaftar Bigdata", df_bigdata["pendaftar"].sum(), "👥")
+
+    min_date = df_notion["date certification"].min().date()
+    max_date = df_notion["date certification"].max().date()
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date, key="date notion")
+
+    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected notion")
+
+    filtered_notion = df_notion[
+        (df_notion["date certification"].dt.date >= sel_date[0]) &
+        (df_notion["date certification"].dt.date <= sel_date[1])
+    ]
+    if selected_sertifikasi != "All":
+        filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
+
+    df_month = (
+        filtered_notion.groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
+        .sum().reset_index(name="Jumlah")
+    )
+    df_month["date certification"] = df_month["date certification"].astype(str)
+    fig_not = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
+                     title="TOTAL PESERTA NOTION PER BULAN", height=500)
+    fig_not.update_traces(textposition="outside")
+    st.plotly_chart(fig_not, use_container_width=True)
+
+
+# ===== Tab 3: By Institution =====
+with tab3:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
     sel_date = st.date_input("📅 Pilih Rentang Tanggal (institution) :", (min_date, max_date), min_date, max_date, key="date institution")
@@ -150,36 +182,5 @@ with tab2:
     fig_inst = px.bar(top_instansi, x="pendaftar", y="instansi", orientation="h", text="pendaftar")
     fig_inst.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
     st.plotly_chart(fig_inst, use_container_width=True)
-
-# ===== Tab 3: By Notion =====
-with tab3:
-    st.subheader("💡VISUALISASI DATA NOTION")
-    colA, colB, colC = st.columns(3)
-    stat_card("Total Peserta Notion", df_notion["peserta"].sum(), "⭐")
-    stat_card("Total Pendaftar Bigdata", df_bigdata["pendaftar"].sum(), "👥")
-
-    min_date = df_notion["date certification"].min().date()
-    max_date = df_notion["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date, key="date notion")
-
-    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
-    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected notion")
-
-    filtered_notion = df_notion[
-        (df_notion["date certification"].dt.date >= sel_date[0]) &
-        (df_notion["date certification"].dt.date <= sel_date[1])
-    ]
-    if selected_sertifikasi != "All":
-        filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
-
-    df_month = (
-        filtered_notion.groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
-        .sum().reset_index(name="Jumlah")
-    )
-    df_month["date certification"] = df_month["date certification"].astype(str)
-    fig_not = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
-                     title="TOTAL PESERTA NOTION PER BULAN", height=500)
-    fig_not.update_traces(textposition="outside")
-    st.plotly_chart(fig_not, use_container_width=True)
 
 # End of Dashboard
