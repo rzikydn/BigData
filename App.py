@@ -162,24 +162,24 @@ with tab2:
     sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
     selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected_notion")
 
-    # Filter Notion sesuai tanggal & sertifikasi
+    # FILTER SESUAI TANGGAL & SERTIFIKASI
     filtered_notion = df_notion[
-        (df_notion["date certification"].dt.date >= sel_date_notion[0]) &
-        (df_notion["date certification"].dt.date <= sel_date_notion[1])
+        (df_notion["date certification"].dt.date >= sel_date[0]) &
+        (df_notion["date certification"].dt.date <= sel_date[1])
     ]
     if selected_sertifikasi != "All":
         filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
     # Filter BigData sesuai tanggal + jenis/instansi Overview
-filtered_bigdata_same_date = df_bigdata[
+    filtered_bigdata_same_date = df_bigdata[
     (df_bigdata["date certification"].dt.date >= sel_date_notion[0]) &
     (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
-]
-if sel_jenis != "All":
+    ]
+    if sel_jenis != "All":
     filtered_bigdata_same_date = filtered_bigdata_same_date[
         filtered_bigdata_same_date["jenis sertifikasi"] == sel_jenis
     ]
-if sel_instansi != "All":
+    if sel_instansi != "All":
     filtered_bigdata_same_date = filtered_bigdata_same_date[
         filtered_bigdata_same_date["instansi"] == sel_instansi
     ]
@@ -191,7 +191,7 @@ if sel_instansi != "All":
     with colA:
         stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
     with colB:
-        stat_card("Total Selesai (By Basys)", filtered_bigdata_same_date["selesai"].sum(), "✅")
+        stat_card("Total Selesai (BigData)", filtered_df["selesai"].sum(), "✅")
 
     # -------------------------
     # 6. Chart Notion vs BigData per bulan
