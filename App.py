@@ -196,14 +196,14 @@ with tab2:
     stat_card("Total Pendaftar", df_bigdata["pendaftar"].sum(skipna=True), "👥")
 
     # Rentang tanggal khusus Notion
-    min_date = df_notion["date certification"].min().date()
-    max_date = df_notion["date certification"].max().date()
+    min_date = df_bigdata["date certification"].min().date()
+    max_date = df_bigdata["date certification"].max().date()
     selected_dates = st.date_input(
-        "📅 Pilih Rentang Tanggal (Notion):",
-        value=(min_date, max_date),
-        min_value=min_date,
-        max_value=max_date
-    )
+    "📅 Pilih Rentang Tanggal (Data Notion) :",
+    value=(min_date, max_date),
+    min_value=min_date,
+    max_value=max_date
+)
 
     # Dropdown filter nama sertifikasi
     col1, = st.columns(1)
