@@ -163,7 +163,7 @@ with tab3:
     sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date, key="date notion")
 
     sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
-    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list)
+    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected notion")
 
     filtered_notion = df_notion[
         (df_notion["date certification"].dt.date >= sel_date[0]) &
