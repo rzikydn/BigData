@@ -232,12 +232,33 @@ with tab3:
         .reset_index().sort_values("pendaftar", ascending=False).head(5)
         .sort_values("pendaftar", ascending=True)
     )
-    fig_inst = px.bar(top_instansi, x="pendaftar", y="instansi", orientation="h", text="pendaftar")
-    fig_inst.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
-    st.plotly_chart(fig_inst, use_container_width=True)
 
-    # Info box / expander untuk penjelasan
-    with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
+    #== Bagian Chart ==#
+    fig_lolli = go.Figure()
+fig_lolli.add_trace(go.Scatter(
+    x=top_instansi["pendaftar"],
+    y=top_instansi["instansi"],
+    mode='markers',
+    marker=dict(size=12),
+    name='Jumlah Pendaftar'
+))
+fig_lolli.add_trace(go.Scatter(
+    x=top_instansi["pendaftar"],
+    y=top_instansi["instansi"],
+    mode='lines',
+    line=dict(color='gray', width=2),
+    showlegend=False
+))
+fig_lolli.update_layout(
+    title="Top 5 Instansi Berdasarkan Pendaftar (Lollipop Chart)",
+    xaxis_title="Jumlah Pendaftar",
+    yaxis_title="",
+    showlegend=False
+)
+st.plotly_chart(fig_lolli, use_container_width=True)
+
+# Info box / expander untuk penjelasan
+with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
         st.markdown("""
         Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
 
