@@ -85,10 +85,17 @@ selected_instansi = col2.selectbox("Instansi", instansi_list)
 # =========================
 # 5. Filter Data
 # =========================
+# Pastikan selected_dates selalu tuple (start, end)
+if isinstance(selected_dates, tuple):
+    start_date, end_date = selected_dates
+else:
+    start_date = end_date = selected_dates
+
 filtered_df = df_bigdata[
-    (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
-    (df_bigdata["date certification"].dt.date <= selected_dates[1])
+    (df_bigdata["date certification"].dt.date >= start_date) &
+    (df_bigdata["date certification"].dt.date <= end_date)
 ]
+
 
 # =========================
 # 6. Buat Kolom Status
