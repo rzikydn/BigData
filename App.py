@@ -141,7 +141,7 @@ with tab1:
 
 # ===== Tab 2: By Notion =====
 with tab2:
-    st.subheader("💡VISUALISASI DATA NOTION")
+    st.subheader("💡 VISUALISASI DATA NOTION")
 
     # Filter tanggal
     min_date_notion = df_notion["date certification"].min().date()
@@ -166,21 +166,19 @@ with tab2:
     if selected_sertifikasi != "All":
         filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
-    # Filter BigData hanya berdasarkan tanggal (tanpa filter jenis/instansi)
+    # Filter BigData berdasarkan tanggal **dan filter jenis/instansi dari Overview**
     filtered_bigdata_same_date = df_bigdata[
         (df_bigdata["date certification"].dt.date >= sel_date_notion[0]) &
         (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
     ]
-
-    # Tambahkan filter jenis dan instansi dari Overview jika ingin sama persis
-if sel_jenis != "All":
-    filtered_bigdata_same_date = filtered_bigdata_same_date[
-        filtered_bigdata_same_date["jenis sertifikasi"] == sel_jenis
-    ]
-if sel_instansi != "All":
-    filtered_bigdata_same_date = filtered_bigdata_same_date[
-        filtered_bigdata_same_date["instansi"] == sel_instansi
-    ]
+    if sel_jenis != "All":
+        filtered_bigdata_same_date = filtered_bigdata_same_date[
+            filtered_bigdata_same_date["jenis sertifikasi"] == sel_jenis
+        ]
+    if sel_instansi != "All":
+        filtered_bigdata_same_date = filtered_bigdata_same_date[
+            filtered_bigdata_same_date["instansi"] == sel_instansi
+        ]
 
     # Stat cards
     colA, colB = st.columns(2)
@@ -217,6 +215,22 @@ if sel_instansi != "All":
         title="Trend Peserta Notion vs Selesai BigData"
     )
     st.plotly_chart(fig_line, use_container_width=True)
+
+    # Info box / expander
+    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+        st.markdown("""
+        Bagian By Notion menampilkan **perbandingan peserta sertifikasi dari Notion** dengan **jumlah sertifikasi selesai berdasarkan data Basys**.
+
+        Informasi yang ditampilkan:
+        1. **Total Peserta (By Notion)** – jumlah peserta yang tercatat di Notion.
+        2. **Total Selesai (By Basys)** – jumlah sertifikasi yang selesai sesuai data Basys, **disesuaikan dengan filter tanggal, jenis sertifikasi, dan instansi**.
+        3. **Grafik Trend** – membandingkan jumlah peserta Notion vs Selesai Basys per bulan.
+
+        Fungsi bagian ini:
+        - Memudahkan monitoring kesesuaian data Notion dengan data resmi Basys.
+        - Menunjukkan tren pendaftaran dan penyelesaian sertifikasi dari waktu ke waktu.
+        """)
+
 
 # ===== Tab 3: By Institution =====
 with tab3:
