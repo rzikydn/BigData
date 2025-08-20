@@ -119,6 +119,24 @@ with tab1:
     fig_over.update_traces(textposition="outside")
     st.plotly_chart(fig_over, use_container_width=True)
 
+    # Info box / expander untuk penjelasan
+    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+        st.markdown("""
+        Bagian Overview menampilkan **ringkasan keseluruhan data sertifikasi** sesuai rentang tanggal yang dipilih.
+
+        Informasi yang ditampilkan:
+        1. **Total Pendaftar** – jumlah seluruh peserta yang mendaftar sertifikasi.
+        2. **Total Dibatalkan** – jumlah pendaftar yang membatalkan sertifikasi.
+        3. **Selesai** – jumlah sertifikasi yang sudah diselesaikan oleh peserta.
+        4. **Grafik jumlah pendaftar per bulan** – memvisualisasikan tren pendaftaran dari waktu ke waktu.
+
+        Fungsi bagian ini adalah untuk memberikan **pandangan cepat** mengenai performa sertifikasi, sehingga pengguna dapat:
+        - Menilai volume partisipasi peserta secara keseluruhan.
+        - Mengidentifikasi tren pendaftaran bulanan.
+        - Membuat keputusan strategis terkait perencanaan dan pengelolaan sertifikasi.
+        """)
+
+
 # ===== Tab 2: By Notion =====
 with tab2:
     st.subheader("💡VISUALISASI DATA NOTION")
@@ -182,5 +200,18 @@ with tab3:
     fig_inst = px.bar(top_instansi, x="pendaftar", y="instansi", orientation="h", text="pendaftar")
     fig_inst.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
     st.plotly_chart(fig_inst, use_container_width=True)
+
+    # Info box / expander untuk penjelasan
+    with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
+        st.markdown("""
+        Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
+
+        Manfaat informasi ini:
+        1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
+        2. Membantu penyelenggara memahami distribusi peserta per instansi.
+        3. Mempermudah perencanaan alokasi sumber daya dan layanan untuk instansi tertentu.
+
+        Dengan visualisasi ini, pengguna dapat langsung melihat instansi dengan partisipasi tertinggi dan memantau tren perubahan jumlah pendaftar dari waktu ke waktu.
+        """)
 
 # End of Dashboard
