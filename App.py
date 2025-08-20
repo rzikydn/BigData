@@ -70,17 +70,6 @@ def get_status(row):
     elif row["dibatalkan"] > 0:    return "Dibatalkan"
     else:                          return "Pengajuan Awal"
 
-# ========================= TEST KONEKSI SUPABASE =========================
-try:
-    test = supabase.table("bigdata").select("*").limit(1).execute()
-    st.success("Test koneksi berhasil ✅")
-    st.write(test.data)
-except Exception as e:
-    st.error("Test koneksi GAGAL ❌")
-    st.write(e)
-# ========================================================================
-
-
 # =========================
 # 5. Tabs Layout
 # =========================
