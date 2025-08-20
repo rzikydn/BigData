@@ -172,15 +172,15 @@ with tab1:
     # Info box / expander untuk penjelasan
     with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian Overview menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal yang dipilih.
+        Bagian Overview menampilkan *ringkasan keseluruhan data sertifikasi* sesuai rentang tanggal yang dipilih.
 
         Informasi yang ditampilkan:
-        1. Total Pendaftar – jumlah seluruh peserta yang mendaftar sertifikasi.
-        2. Total Dibatalkan – jumlah pendaftar yang membatalkan sertifikasi.
-        3. Selesai – jumlah sertifikasi yang sudah diselesaikan oleh peserta.
-        4. Grafik jumlah pendaftar per bulan – memvisualisasikan tren pendaftaran dari waktu ke waktu.
+        1. *Total Pendaftar* – jumlah seluruh peserta yang mendaftar sertifikasi.
+        2. *Total Dibatalkan* – jumlah pendaftar yang membatalkan sertifikasi.
+        3. *Selesai* – jumlah sertifikasi yang sudah diselesaikan oleh peserta.
+        4. *Grafik jumlah pendaftar per bulan* – memvisualisasikan tren pendaftaran dari waktu ke waktu.
 
-        Fungsi bagian ini adalah untuk memberikan pandangan cepat mengenai performa sertifikasi, sehingga pengguna dapat:
+        Fungsi bagian ini adalah untuk memberikan *pandangan cepat* mengenai performa sertifikasi, sehingga pengguna dapat:
         - Menilai volume partisipasi peserta secara keseluruhan.
         - Mengidentifikasi tren pendaftaran bulanan.
         - Membuat keputusan strategis terkait perencanaan dan pengelolaan sertifikasi.
@@ -194,6 +194,31 @@ with tab2:
     colA, colB, colC = st.columns(3)
     stat_card("Total Notion", df_notion["peserta"].sum(skipna=True), "⭐")
     stat_card("Total Pendaftar", df_bigdata["pendaftar"].sum(skipna=True), "👥")
+
+    # Rentang tanggal khusus Notion
+    min_date = df_notion["date certification"].min().date()
+    max_date = df_notion["date certification"].max().date()
+    selected_dates = st.date_input(
+        "📅 Pilih Rentang Tanggal (Notion):",
+        value=(min_date, max_date),
+        min_value=min_date,
+        max_value=max_date
+    )
+
+    # Dropdown filter nama sertifikasi
+    col1, = st.columns(1)
+    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+    selected_sertifikasi = col1.selectbox("Nama Sertifikasi", sertifikasi_list)
+
+    # Filter Data Notion
+    filtered_notion = df_notion[
+        (df_notion["date certification"].dt.date >= selected_dates[0]) &
+        (df_notion["date certification"].dt.date <= selected_dates[1])
+    ]
+    if selected_sertifikasi != "All":
+        filtered_notion = filtered_notion[
+            filtered_notion["nama sertifikasi"] == selected_sertifikasi
+        ]
 
     # Chart Overview Notion
     df_month = (
@@ -245,7 +270,7 @@ with tab3:
     # Info box / expander untuk penjelasan
     with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
         st.markdown("""
-        Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
+        Bagian ini menampilkan *5 instansi dengan jumlah pendaftar sertifikasi terbanyak* berdasarkan rentang tanggal yang dipilih.
 
         Manfaat informasi ini:
         1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
