@@ -156,10 +156,16 @@ with tab2:
     if selected_sertifikasi != "All":
         filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
+    filtered_bigdata_by_notion = df_bigdata[
+    (df_bigdata["date certification"].dt.date >= sel_date[0]) &
+    (df_bigdata["date certification"].dt.date <= sel_date[1])
+]
+
     # ==== STAT CARD BERDASARKAN FILTER ====
     colA, colB = st.columns(2)
     stat_card("Total Peserta", filtered_notion["peserta"].sum(), "⭐")
-    stat_card("Total Selesai", df_bigdata["selesai"].count(), "✅")  # <- atau ganti logika sesuai field bigdata jika mau
+    stat_card("Total Selesai (BigData)", filtered_bigdata_by_notion["selesai"].sum(), "✅")
+
 
     # ==== CHART ====
     df_month = (
