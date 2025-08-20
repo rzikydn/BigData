@@ -287,9 +287,12 @@ with tab3:
     # Stat cards
     colA, colB = st.columns(2)
     with colA:
-        stat_card("Total Pendaftar", filtered_df_inst["pendaftar"].sum(), "👥")
+      stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
     with colB:
-        stat_card("Selesai", filtered_df_inst["selesai"].sum(), "✅")
+      # Total Selesai selalu mengambil seluruh data bigdata tanpa filter apapun
+      total_selesai_bigdata = df_bigdata["selesai"].sum()
+      stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
+
 
     # Top 5 instansi
     top_instansi = (
