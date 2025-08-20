@@ -71,16 +71,8 @@ df_notion = load_notion()
 st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
 
-# Rentang tanggal
 # Rentang tanggal global untuk Overview & By Institution
-min_date = df_bigdata["date certification"].min().date()
-max_date = df_bigdata["date certification"].max().date()
-selected_dates = st.date_input(
-    "📅 Pilih Rentang Tanggal :",
-    value=(min_date, max_date),
-    min_value=min_date,
-    max_value=max_date
-)
+#======#
 
 # Dropdown jenis sertifikasi & instansi
 col1, col2 = st.columns(2)
@@ -136,6 +128,17 @@ tab1, tab2, tab3, = st.tabs(["📈 Overview","📝By Notion", "🏢 By Instituti
 
 # ===== Tab 1: Overview =====
 with tab1:
+    
+    #== Remtang Tanggal ==#
+    min_date = df_bigdata["date certification"].min().date()
+    max_date = df_bigdata["date certification"].max().date()
+    selected_dates = st.date_input(
+    "📅 Pilih Rentang Tanggal :",
+    value=(min_date, max_date),
+    min_value=min_date,
+    max_value=max_date
+)
+
     # Stat cards
     colA, colB, colC = st.columns(3)
     stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(skipna=True), "👥")
@@ -195,11 +198,12 @@ with tab2:
     min_date_notion = df_notion["date certification"].min().date()
     max_date_notion = df_notion["date certification"].max().date()
     selected_dates_notion = st.date_input(
-    "📅 Pilih Rentang Tanggal (Notion):",
-    value=(min_date_notion, max_date_notion),
-    min_value=min_date_notion,
-    max_value=max_date_notion
-)
+        "📅 Pilih Rentang Tanggal (Notion):",
+        value=(min_date_notion, max_date_notion),
+        min_value=min_date_notion,
+        max_value=max_date_notion
+    )
+
 
     # Dropdown filter nama sertifikasi
     col1, = st.columns(1)
@@ -208,9 +212,9 @@ with tab2:
 
     # Filter Data Notion
     filtered_notion = df_notion[
-    (df_notion["date certification"].dt.date >= selected_dates_notion[0]) &
-    (df_notion["date certification"].dt.date <= selected_dates_notion[1])
-]
+        (df_notion["date certification"].dt.date >= selected_dates_notion[0]) &
+        (df_notion["date certification"].dt.date <= selected_dates_notion[1])
+    ]
  
     # Chart Notion
     df_month = (
@@ -237,7 +241,24 @@ with tab2:
 # ===== Tab 3: By Institution =================================================================================
 with tab3:
     st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
-    
+
+    #== bagian tanggal ==#
+    min_date = df_bigdata["date certification"].min().date()
+    max_date = df_bigdata["date certification"].max().date()
+    selected_dates = st.date_input(
+    "📅 Pilih Rentang Tanggal :",
+    value=(min_date, max_date),
+    min_value=min_date,
+    max_value=max_date
+)
+
+# Filter BigData sesuai tanggal global
+filtered_df = df_bigdata[
+    (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
+    (df_bigdata["date certification"].dt.date <= selected_dates[1])
+]
+
+
     top_instansi = (
         filtered_df.groupby("instansi")["pendaftar"]
         .sum()
