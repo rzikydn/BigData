@@ -159,7 +159,7 @@ with tab2:
     # ==== STAT CARD BERDASARKAN FILTER ====
     colA, colB = st.columns(2)
     stat_card("Total Peserta", filtered_notion["peserta"].sum(), "⭐")
-    stat_card("Total Selesai", filtered_notion["peserta"].count(), "✅")  # <- atau ganti logika sesuai field bigdata jika mau
+    stat_card("Total Selesai", df_bigdata["selesai"].count(), "✅")  # <- atau ganti logika sesuai field bigdata jika mau
 
     # ==== CHART ====
     df_month = (
