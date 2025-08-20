@@ -122,17 +122,17 @@ with tab1:
     st.plotly_chart(fig_over, use_container_width=True)
 
     # Info box / expander untuk penjelasan
-    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian Overview menampilkan **ringkasan keseluruhan data sertifikasi** sesuai rentang tanggal yang dipilih.
+        Bagian Overview menampilkan *ringkasan keseluruhan data sertifikasi* sesuai rentang tanggal yang dipilih.
 
         Informasi yang ditampilkan:
-        1. **Total Pendaftar** – jumlah seluruh peserta yang mendaftar sertifikasi.
-        2. **Total Dibatalkan** – jumlah pendaftar yang membatalkan sertifikasi.
-        3. **Selesai** – jumlah sertifikasi yang sudah diselesaikan oleh peserta.
-        4. **Grafik jumlah pendaftar per bulan** – memvisualisasikan tren pendaftaran dari waktu ke waktu.
+        1. *Total Pendaftar* – jumlah seluruh peserta yang mendaftar sertifikasi.
+        2. *Total Dibatalkan* – jumlah pendaftar yang membatalkan sertifikasi.
+        3. *Selesai* – jumlah sertifikasi yang sudah diselesaikan oleh peserta.
+        4. *Grafik jumlah pendaftar per bulan* – memvisualisasikan tren pendaftaran dari waktu ke waktu.
 
-        Fungsi bagian ini adalah untuk memberikan **pandangan cepat** mengenai performa sertifikasi, sehingga pengguna dapat:
+        Fungsi bagian ini adalah untuk memberikan *pandangan cepat* mengenai performa sertifikasi, sehingga pengguna dapat:
         - Menilai volume partisipasi peserta secara keseluruhan.
         - Mengidentifikasi tren pendaftaran bulanan.
         - Membuat keputusan strategis terkait perencanaan dan pengelolaan sertifikasi.
@@ -200,8 +200,9 @@ with tab2:
     with colA:
         stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
     with colB:
-        total_selesai_bigdata = filtered_bigdata_same_date["selesai"].sum()
+        total_selesai_bigdata = df_bigdata["selesai"].sum()
     stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
+
     # -------------------------
     # 6. Chart Notion vs BigData per bulan
     # -------------------------
@@ -236,14 +237,14 @@ with tab2:
     # -------------------------
     # 7. Info Box
     # -------------------------
-    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian By Notion menampilkan **perbandingan peserta sertifikasi dari Notion** dengan **jumlah sertifikasi selesai berdasarkan data Basys**.
+        Bagian By Notion menampilkan *perbandingan peserta sertifikasi dari Notion* dengan *jumlah sertifikasi selesai berdasarkan data Basys*.
 
         Informasi yang ditampilkan:
-        1. **Total Peserta (By Notion)** – jumlah peserta yang tercatat di Notion.
-        2. **Total Selesai (By Basys)** – jumlah sertifikasi yang selesai sesuai data Basys, **hanya untuk sertifikasi yang ada di Notion**.
-        3. **Grafik Trend** – membandingkan jumlah peserta Notion vs Selesai Basys per bulan.
+        1. *Total Peserta (By Notion)* – jumlah peserta yang tercatat di Notion.
+        2. *Total Selesai (By Basys)* – jumlah sertifikasi yang selesai sesuai data Basys, *hanya untuk sertifikasi yang ada di Notion*.
+        3. *Grafik Trend* – membandingkan jumlah peserta Notion vs Selesai Basys per bulan.
 
         Fungsi bagian ini:
         - Memudahkan monitoring kesesuaian data Notion dengan data resmi Basys.
@@ -284,15 +285,12 @@ with tab3:
         filtered_df_inst = filtered_df_inst[filtered_df_inst["instansi"] == sel_instansi_inst]
     filtered_df_inst["status"] = filtered_df_inst.apply(get_status, axis=1)
 
+    # Stat cards
     colA, colB = st.columns(2)
-with colA:
-    stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
-with colB:
-    # Pastikan stat_card berada di dalam colB
-    total_selesai_bigdata = df_bigdata["selesai"].sum()
-    stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
-
-
+    with colA:
+        stat_card("Total Pendaftar", filtered_df_inst["pendaftar"].sum(), "👥")
+    with colB:
+        stat_card("Selesai", filtered_df_inst["selesai"].sum(), "✅")
 
     # Top 5 instansi
     top_instansi = (
@@ -326,9 +324,9 @@ with colB:
     st.plotly_chart(fig_lolli, use_container_width=True)
 
     # Info box
-    with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
+    with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
         st.markdown("""
-        Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
+        Bagian ini menampilkan *5 instansi dengan jumlah pendaftar sertifikasi terbanyak* berdasarkan rentang tanggal yang dipilih.
 
         Manfaat informasi ini:
         1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
