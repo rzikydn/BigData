@@ -171,18 +171,21 @@ with tab2:
         filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
     # Filter BigData sesuai tanggal + jenis/instansi Overview
-    filtered_bigdata_same_date = df_bigdata[
+filtered_bigdata_same_date = df_bigdata[
     (df_bigdata["date certification"].dt.date >= sel_date_notion[0]) &
     (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
-    ]
-    if sel_jenis != "All":
+]
+
+if sel_jenis != "All":
     filtered_bigdata_same_date = filtered_bigdata_same_date[
         filtered_bigdata_same_date["jenis sertifikasi"] == sel_jenis
     ]
-    if sel_instansi != "All":
+
+if sel_instansi != "All":
     filtered_bigdata_same_date = filtered_bigdata_same_date[
         filtered_bigdata_same_date["instansi"] == sel_instansi
     ]
+
 
     # -------------------------
     # 5. Stat Cards
