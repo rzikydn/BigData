@@ -75,19 +75,19 @@ def get_status(row):
 # =========================
 st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
-tab1, tab2, tab3 = st.tabs(["📈 Overview", "📝 By Notion", "🏢 By Institution"])
+tab1, tab2, tab3 = st.tabs(["📈 Overview", "🏢 By Institution", "📝 By Notion"])
 
 # ===== Tab 1: Overview =====
 with tab1:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Overview) :", (min_date, max_date), min_date, max_date, key="date overview")
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal :", (min_date, max_date), min_date, max_date)
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis overview")
-    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi overview")
+    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
+    sel_instansi = col2.selectbox("Instansi", instansi_list)
 
     # Filter data
     filtered_df = df_bigdata[
@@ -119,45 +119,17 @@ with tab1:
     fig_over.update_traces(textposition="outside")
     st.plotly_chart(fig_over, use_container_width=True)
 
-# ===== Tab 2: By Notion =====
+# ===== Tab 2: By Institution =====
 with tab2:
-    st.subheader("💡VISUALISASI DATA NOTION")
-    colA, colB, colC = st.columns(3)
-    stat_card("Total Peserta Notion", df_notion["peserta"].sum(), "⭐")
-    stat_card("Total Pendaftar Bigdata", df_bigdata["pendaftar"].sum(), "👥")
-
-    min_date = df_notion["date certification"].min().date()
-    max_date = df_notion["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date, key="date notion")
-
-    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
-    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list)
-
-    #Filtered data notion#
-    filtered_df = df_notion[
-        (df_notion["date certification"].dt.date >= sel_date[0]) &
-        (df_notion["date certification"].dt.date <= sel_date[1])
-    ]
-    if sel_jenis != "All":
-        filtered_df = filtered_df[filtered_df["nama sertifikasi"] == sel_jenis]
-    
-    df_month["date certification"] = df_month["date certification"].astype(str)
-    fig_not = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
-                     title="TOTAL PESERTA NOTION PER BULAN", height=500)
-    fig_not.update_traces(textposition="outside")
-    st.plotly_chart(fig_not, use_container_width=True)
-
-# ===== Tab 3: By Institution =====
-with tab3:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Institution):", (min_date, max_date), min_date, max_date, key="date institution")
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal :", (min_date, max_date), min_date, max_date)
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis institution")
-    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi instution")
+    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
+    sel_instansi = col2.selectbox("Instansi", instansi_list)
 
     filtered_df = df_bigdata[
         (df_bigdata["date certification"].dt.date >= sel_date[0]) &
@@ -179,5 +151,35 @@ with tab3:
     fig_inst.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
     st.plotly_chart(fig_inst, use_container_width=True)
 
+# ===== Tab 3: By Notion =====
+with tab3:
+    st.subheader("💡VISUALISASI DATA NOTION")
+    colA, colB, colC = st.columns(3)
+    stat_card("Total Peserta Notion", df_notion["peserta"].sum(), "⭐")
+    stat_card("Total Pendaftar Bigdata", df_bigdata["pendaftar"].sum(), "👥")
+
+    min_date = df_notion["date certification"].min().date()
+    max_date = df_notion["date certification"].max().date()
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date)
+
+    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
+    selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list)
+
+    filtered_notion = df_notion[
+        (df_notion["date certification"].dt.date >= sel_date[0]) &
+        (df_notion["date certification"].dt.date <= sel_date[1])
+    ]
+    if selected_sertifikasi != "All":
+        filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
+
+    df_month = (
+        filtered_notion.groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
+        .sum().reset_index(name="Jumlah")
+    )
+    df_month["date certification"] = df_month["date certification"].astype(str)
+    fig_not = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
+                     title="TOTAL PESERTA NOTION PER BULAN", height=500)
+    fig_not.update_traces(textposition="outside")
+    st.plotly_chart(fig_not, use_container_width=True)
 
 # End of Dashboard
