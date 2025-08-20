@@ -12,7 +12,7 @@ from supabase import create_client
 # 1. Konfigurasi Supabase
 # =========================
 SUPABASE_URL = "https://aaxxsnilazypljkxoktx.supabase.co"
-SUPABASE_KEY = "ey..."
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFheHhzbmlsYXp5cGxqa3hva3R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyODAxMzcsImV4cCI6MjA2OTg1NjEzN30.l_ySjvjv0-gYpwAF5E9i6aT0W7_iakGlSEqfIXzelqE"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # =========================
@@ -69,6 +69,17 @@ def get_status(row):
     elif row["on progress"] > 0:   return "On Progress"
     elif row["dibatalkan"] > 0:    return "Dibatalkan"
     else:                          return "Pengajuan Awal"
+
+# ========================= TEST KONEKSI SUPABASE =========================
+try:
+    test = supabase.table("bigdata").select("*").limit(1).execute()
+    st.success("Test koneksi berhasil ✅")
+    st.write(test.data)
+except Exception as e:
+    st.error("Test koneksi GAGAL ❌")
+    st.write(e)
+# ========================================================================
+
 
 # =========================
 # 5. Tabs Layout
