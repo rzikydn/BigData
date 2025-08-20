@@ -137,7 +137,7 @@ def stat_card(label, value, icon):
 # =========================
 # 8. Tabs Layout
 # =========================
-tab1, tab2, tab3, = st.tabs(["📈 Overview","🏢 By Institution", "📝By Notion"])
+tab1, tab2, tab3, = st.tabs(["📈 Overview","📝By Notion", "🏢 By Institution"])
 
 # ===== Tab 1: Overview =====
 with tab1:
@@ -186,48 +186,8 @@ with tab1:
         - Membuat keputusan strategis terkait perencanaan dan pengelolaan sertifikasi.
         """)
 
-# ===== Tab 2: By Institution =====
+# ===== Tab 2: By Notion =====
 with tab2:
-    st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
-    
-    top_instansi = (
-        filtered_df.groupby("instansi")["pendaftar"]
-        .sum()
-        .reset_index()
-        .sort_values("pendaftar", ascending=False)
-        .head(5)
-        .sort_values("pendaftar", ascending=True)
-    )
-    
-    fig_instansi = px.bar(
-        top_instansi,
-        x="pendaftar",
-        y="instansi",
-        orientation="h",
-        text="pendaftar",
-        title="Top 5 Instansi Berdasarkan Jumlah Pendaftar",
-        color_discrete_sequence=["#80c6ff"]
-    )
-    fig_instansi.update_traces(textposition="inside")
-    fig_instansi.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
-    st.plotly_chart(fig_instansi, use_container_width=True)
-
-    # Info box / expander untuk penjelasan
-    with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
-        st.markdown("""
-        Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
-
-        Manfaat informasi ini:
-        1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
-        2. Membantu penyelenggara memahami distribusi peserta per instansi.
-        3. Mempermudah perencanaan alokasi sumber daya dan layanan untuk instansi tertentu.
-
-        Dengan visualisasi ini, pengguna dapat langsung melihat instansi dengan partisipasi tertinggi dan memantau tren perubahan jumlah pendaftar dari waktu ke waktu.
-        """)
-
-
-# ===== Tab 3: By Notion =====
-with tab3:
     st.subheader("💡VISUALISASI DATA NOTION")
 
     # Stat cards
@@ -281,6 +241,44 @@ with tab3:
     st.plotly_chart(fig_overview, use_container_width=True)
 
 
+# ===== Tab 3: By Institution =====
+with tab3:
+    st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
+    
+    top_instansi = (
+        filtered_df.groupby("instansi")["pendaftar"]
+        .sum()
+        .reset_index()
+        .sort_values("pendaftar", ascending=False)
+        .head(5)
+        .sort_values("pendaftar", ascending=True)
+    )
+    
+    fig_instansi = px.bar(
+        top_instansi,
+        x="pendaftar",
+        y="instansi",
+        orientation="h",
+        text="pendaftar",
+        title="Top 5 Instansi Berdasarkan Jumlah Pendaftar",
+        color_discrete_sequence=["#80c6ff"]
+    )
+    fig_instansi.update_traces(textposition="inside")
+    fig_instansi.update_layout(yaxis_title="", xaxis_title="Jumlah Pendaftar", showlegend=False)
+    st.plotly_chart(fig_instansi, use_container_width=True)
+
+    # Info box / expander untuk penjelasan
+    with st.expander("ℹ️ Fungsi Bagian Ini", expanded=True):
+        st.markdown("""
+        Bagian ini menampilkan **5 instansi dengan jumlah pendaftar sertifikasi terbanyak** berdasarkan rentang tanggal yang dipilih.
+
+        Manfaat informasi ini:
+        1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
+        2. Membantu penyelenggara memahami distribusi peserta per instansi.
+        3. Mempermudah perencanaan alokasi sumber daya dan layanan untuk instansi tertentu.
+
+        Dengan visualisasi ini, pengguna dapat langsung melihat instansi dengan partisipasi tertinggi dan memantau tren perubahan jumlah pendaftar dari waktu ke waktu.
+        """)
 
     
 
