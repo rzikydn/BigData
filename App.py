@@ -139,7 +139,7 @@ with tab1:
         """)
 
 
-=== Tab 2: By Notion =====
+#=== Tab 2: By Notion =====
 with tab2:
     st.subheader("💡 VISUALISASI DATA NOTION")
 
