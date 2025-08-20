@@ -7,6 +7,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from supabase import create_client
+import plotly.graph_objs as go
+
 
 # =========================
 # 1. Konfigurasi Supabase
