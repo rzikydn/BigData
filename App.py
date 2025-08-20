@@ -172,6 +172,16 @@ with tab2:
         (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
     ]
 
+    # Tambahkan filter jenis dan instansi dari Overview jika ingin sama persis
+if sel_jenis != "All":
+    filtered_bigdata_same_date = filtered_bigdata_same_date[
+        filtered_bigdata_same_date["jenis sertifikasi"] == sel_jenis
+    ]
+if sel_instansi != "All":
+    filtered_bigdata_same_date = filtered_bigdata_same_date[
+        filtered_bigdata_same_date["instansi"] == sel_instansi
+    ]
+
     # Stat cards
     colA, colB = st.columns(2)
     with colA:
