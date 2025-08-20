@@ -166,7 +166,7 @@ with tab2:
     # ==== STAT CARD BERDASARKAN FILTER ====
     colA, colB = st.columns(2)
     stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
-    stat_card("Total Selesai (By Basys)", filtered_df["selesai"].sum(), "✅")
+    stat_card("Total Selesai (By Basys)", filtered_bigdata_by_notion["selesai"].sum(), "✅")
     
    
     # ==== CHART PERBANDINGAN NOTION vs BIGDATA (per bulan) ====
@@ -183,7 +183,7 @@ df_notion_month = (
 #    menggunakan filtered_df (dari tab Overview),
 #    jika tidak ingin pakai filter Overview gunakan df_bigdata lalu filter tanggal yg sama.
 df_bigdata_month = (
-    filtered_df
+    filtered_bigdata_by_notion
     .groupby(filtered_df["date certification"].dt.to_period("M"))["selesai"]
     .sum()
     .reset_index(name="selesai")
