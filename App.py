@@ -195,7 +195,7 @@ df_compare["date certification"] = df_compare["date certification"].astype(str)
 fig_line = px.line(
     df_compare,
     x="date certification",
-    y=["peserta_notion", "selesai_bigdata"],
+    y=["peserta_notion", "selesai"],
     markers=True,
     title="Trend Peserta Notion vs Selesai BigData"
 )
