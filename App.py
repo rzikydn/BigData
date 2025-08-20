@@ -140,9 +140,6 @@ with tab1:
 # ===== Tab 2: By Notion =====
 with tab2:
     st.subheader("💡VISUALISASI DATA NOTION")
-    colA, colB = st.columns(2)
-    stat_card("Total Peserta", df_notion["peserta"].sum(), "⭐")
-    stat_card("Total Selesai", df_bigdata["selesai"].sum(), "✅")
 
     min_date = df_notion["date certification"].min().date()
     max_date = df_notion["date certification"].max().date()
@@ -151,6 +148,7 @@ with tab2:
     sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
     selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list, key="selected notion")
 
+    # FILTER SESUAI TANGGAL & SERTIFIKASI
     filtered_notion = df_notion[
         (df_notion["date certification"].dt.date >= sel_date[0]) &
         (df_notion["date certification"].dt.date <= sel_date[1])
@@ -158,15 +156,25 @@ with tab2:
     if selected_sertifikasi != "All":
         filtered_notion = filtered_notion[filtered_notion["nama sertifikasi"] == selected_sertifikasi]
 
+    # ==== STAT CARD BERDASARKAN FILTER ====
+    colA, colB = st.columns(2)
+    stat_card("Total Peserta", filtered_notion["peserta"].sum(), "⭐")
+    stat_card("Total Selesai", filtered_notion["peserta"].count(), "✅")  # <- atau ganti logika sesuai field bigdata jika mau
+
+    # ==== CHART ====
     df_month = (
-        filtered_notion.groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
+        filtered_notion
+        .groupby(filtered_notion["date certification"].dt.to_period("M"))["peserta"]
         .sum().reset_index(name="Jumlah")
     )
     df_month["date certification"] = df_month["date certification"].astype(str)
-    fig_not = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
-                     title="TOTAL PESERTA NOTION PER BULAN", height=500)
+    fig_not = px.bar(
+        df_month, x="date certification", y="Jumlah", text="Jumlah",
+        title="TOTAL PESERTA NOTION PER BULAN", height=500
+    )
     fig_not.update_traces(textposition="outside")
     st.plotly_chart(fig_not, use_container_width=True)
+
 
 
 # ===== Tab 3: By Institution =====
