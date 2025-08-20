@@ -170,8 +170,8 @@ with tab2:
     sel_instansi_tab2 = "All"
 
     filtered_bigdata_same_date = df_bigdata[
-        (df_bigdata["date certification"].dt.date >= sel_date_notion[0]) &
-        (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
+        (df_notion["date certification"].dt.date >= sel_date_notion[0]) &
+        (df_notion["date certification"].dt.date <= sel_date_notion[1])
     ]
     
     if sel_jenis_tab2 != "All":
