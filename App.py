@@ -122,10 +122,9 @@ with tab1:
 # ===== Tab 2: By Notion =====
 with tab2:
     st.subheader("💡VISUALISASI DATA NOTION")
-    colA, colB, colC = st.columns(3)
-    stat_card("Total Peserta Notion", df_notion["peserta"].sum(), "⭐")
-    stat_card("Total Pendaftar Bigdata", df_bigdata["pendaftar"].sum(), "👥")
-
+    colA, colB = st.columns(2)
+    stat_card("Total Peserta", df_notion["peserta"].sum(), "⭐")
+    stat_card("Total Selesai", df_bigdata["pselesai"].sum(), "✅")
 
     min_date = df_notion["date certification"].min().date()
     max_date = df_notion["date certification"].max().date()
