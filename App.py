@@ -284,14 +284,14 @@ with tab3:
         filtered_df_inst = filtered_df_inst[filtered_df_inst["instansi"] == sel_instansi_inst]
     filtered_df_inst["status"] = filtered_df_inst.apply(get_status, axis=1)
 
-    # Stat cards
     colA, colB = st.columns(2)
-    with colA:
-      stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
-    with colB:
-      # Total Selesai selalu mengambil seluruh data bigdata tanpa filter apapun
-      total_selesai_bigdata = df_bigdata["selesai"].sum()
-      stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
+with colA:
+    stat_card("Total Peserta (By Notion)", filtered_notion["peserta"].sum(), "⭐")
+with colB:
+    # Pastikan stat_card berada di dalam colB
+    total_selesai_bigdata = df_bigdata["selesai"].sum()
+    stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
+
 
 
     # Top 5 instansi
