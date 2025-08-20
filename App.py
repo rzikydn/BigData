@@ -192,15 +192,14 @@ df_compare = pd.merge(df_notion_month, df_bigdata_month, on="date certification"
 df_compare["date certification"] = df_compare["date certification"].astype(str)
 
 # 4) Tampilkan chart grouped bar
-fig_compare = px.bar(
+fig_line = px.line(
     df_compare,
     x="date certification",
     y=["peserta_notion", "selesai_bigdata"],
-    barmode="group",
-    text_auto=True,
-    title="Perbandingan Peserta Notion vs Selesai BigData (Bulanan)"
+    markers=True,
+    title="Trend Peserta Notion vs Selesai BigData"
 )
-st.plotly_chart(fig_compare, use_container_width=True)
+st.plotly_chart(fig_line, use_container_width=True)
 
 
 
