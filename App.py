@@ -66,20 +66,6 @@ df_bigdata = load_bigdata()
 df_notion = load_notion()
 
 # =========================
-# 5. Filter Data
-# =========================
-filtered_df = df_bigdata[
-    (df_bigdata["date certification"].dt.date >= selected_dates[0]) &
-    (df_bigdata["date certification"].dt.date <= selected_dates[1])
-]
-
-if selected_jenis != "All":
-    filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == selected_jenis]
-
-if selected_instansi != "All":
-    filtered_df = filtered_df[filtered_df["instansi"] == selected_instansi]
-
-# =========================
 # 6. Buat Kolom Status
 # =========================
 def get_status(row):
