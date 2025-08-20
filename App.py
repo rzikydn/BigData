@@ -164,9 +164,8 @@ with tab2:
     # ==== STAT CARD BERDASARKAN FILTER ====
     colA, colB = st.columns(2)
     stat_card("Total Peserta", filtered_notion["peserta"].sum(), "⭐")
-    stat_card("Total Selesai (BigData)", filtered_bigdata_by_notion["selesai"].sum(), "✅")
-
-
+    stat_card("Total Selesai (BigData)", filtered_df["selesai"].sum(), "✅")
+    
     # ==== CHART ====
     df_month = (
         filtered_notion
