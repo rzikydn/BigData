@@ -86,8 +86,8 @@ with tab1:
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
-    sel_instansi = col2.selectbox("Instansi", instansi_list)
+    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis overview")
+    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi overview")
 
     # Filter data
     filtered_df = df_bigdata[
@@ -128,8 +128,8 @@ with tab2:
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list)
-    sel_instansi = col2.selectbox("Instansi", instansi_list)
+    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis institution")
+    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi instution")
 
     filtered_df = df_bigdata[
         (df_bigdata["date certification"].dt.date >= sel_date[0]) &
@@ -160,7 +160,7 @@ with tab3:
 
     min_date = df_notion["date certification"].min().date()
     max_date = df_notion["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date)
+    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Notion):", (min_date, max_date), min_date, max_date, key="date notion")
 
     sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
     selected_sertifikasi = st.selectbox("Nama Sertifikasi", sertifikasi_list)
