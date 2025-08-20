@@ -66,21 +66,6 @@ df_bigdata = load_bigdata()
 df_notion = load_notion()
 
 # =========================
-# 6. Buat Kolom Status
-# =========================
-def get_status(row):
-    if row['selesai'] > 0:
-        return 'Selesai'
-    elif row['on progress'] > 0:
-        return 'On Progress'
-    elif row['dibatalkan'] > 0:
-        return 'Dibatalkan'
-    else:
-        return 'Pengajuan Awal'
-
-filtered_df['status'] = filtered_df.apply(get_status, axis=1)
-
-# =========================
 # 7. Stat Cards Function
 # =========================
 def stat_card(label, value, icon):
@@ -131,6 +116,7 @@ with tab1:
         filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == selected_jenis]
     if selected_instansi != "All":
         filtered_df = filtered_df[filtered_df["instansi"] == selected_instansi]
+    filtered_df['status'] = filtered_df.apply(get_status, axis=1)
 
     # Chart Overview
     df_month = (
@@ -197,6 +183,7 @@ with tab2:
         filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == selected_jenis]
     if selected_instansi != "All":
         filtered_df = filtered_df[filtered_df["instansi"] == selected_instansi]
+    filtered_df['status'] = filtered_df.apply(get_status, axis=1)
     
     st.subheader("🏆 5 INSTANSI DENGAN JUMLAH PENDAFTAR TERBANYAK")
     top_instansi = (
