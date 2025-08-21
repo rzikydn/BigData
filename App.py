@@ -181,18 +181,36 @@ with tab2:
         filtered_notion_chart = filtered_notion_chart[filtered_notion_chart["nama sertifikasi"] == selected_sertifikasi]
 
     # -------------------------
-    # 5. Stat Cards
-    # -------------------------
-    colA, colB = st.columns(2)
-    with colA:
-        # Total Peserta By Notion = seluruh data Excel tanpa filter
-        df_notion["peserta"] = pd.to_numeric(df_notion["peserta"], errors="coerce")
-        total_peserta_notion = df_notion["peserta"].sum()
-        stat_card("Total Peserta (By Notion)", total_peserta_notion, "⭐")
-    with colB:
-        # Total Selesai = seluruh data BigData
-        total_selesai_bigdata = df_bigdata["selesai"].sum()
-        stat_card("Total Selesai (BigData)", total_selesai_bigdata, "✅")
+    # Pastikan kolom peserta numeric
+df_notion["peserta"] = pd.to_numeric(df_notion["peserta"], errors="coerce")
+df_bigdata["selesai"] = pd.to_numeric(df_bigdata["selesai"], errors="coerce")
+
+# Filter Notion sesuai tanggal & sertifikasi terpilih
+filtered_notion_chart = df_notion[
+    (df_notion["date certification"] >= pd.to_datetime(sel_date_notion[0])) &
+    (df_notion["date certification"] <= pd.to_datetime(sel_date_notion[1]))
+]
+if selected_sertifikasi != "All":
+    filtered_notion_chart = filtered_notion_chart[
+        filtered_notion_chart["nama sertifikasi"] == selected_sertifikasi
+    ]
+
+# Filter BigData sesuai tanggal yang sama
+filtered_bigdata_same_date = df_bigdata[
+    (df_bigdata["date certification"] >= pd.to_datetime(sel_date_notion[0])) &
+    (df_bigdata["date certification"] <= pd.to_datetime(sel_date_notion[1]))
+]
+
+# Hitung total peserta & selesai berdasarkan filter
+total_peserta_notion_filtered = filtered_notion_chart["peserta"].sum()
+total_selesai_bigdata_filtered = filtered_bigdata_same_date["selesai"].sum()
+
+# Tampilkan stat card
+colA, colB = st.columns(2)
+with colA:
+    stat_card("Total Peserta (By Notion)", total_peserta_notion_filtered, "⭐")
+with colB:
+    stat_card("Total Selesai (BigData)", total_selesai_bigdata_filtered, "✅")
 
     # -------------------------
     # 6. Chart Notion vs BigData per bulan
