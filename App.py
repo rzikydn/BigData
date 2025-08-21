@@ -83,7 +83,7 @@ tab1, tab2, tab3 = st.tabs(["📈 Overview", "📝 By Notion", "🏢 By Institut
 with tab1:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih Rentang Tanggal (Overview) :", (min_date, max_date), min_date, max_date, key="date overview")
+    sel_date = st.date_input("📅 Pilih rentang tanggal :", (min_date, max_date), min_date, max_date, key="date overview")
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
@@ -149,7 +149,7 @@ with tab2:
     min_date_notion = df_notion["date certification"].min().date()
     max_date_notion = df_notion["date certification"].max().date()
     sel_date_notion = st.date_input(
-        "📅 Pilih Rentang Tanggal (Notion) untuk Chart:",
+        "📅 Pilih rentang tanggal untuk chart notion :",
         (min_date_notion, max_date_notion),
         min_value=min_date_notion,
         max_value=max_date_notion,
@@ -263,7 +263,7 @@ with tab3:
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
     sel_date_inst = st.date_input(
-        "📅 Pilih Rentang Tanggal (Institution):",
+        "📅 Pilih rentang tanggal :",
         (min_date_inst, max_date_inst),
         min_value=min_date_inst,
         max_value=max_date_inst,
