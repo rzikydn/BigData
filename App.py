@@ -173,12 +173,24 @@ with tab2:
         (df_notion["date certification"].dt.date <= sel_date_notion[1])
     ]
 
+
+    # Hitung total peserta Notion (hanya filter tanggal)
+    total_peserta_notion = df_notion.loc[
+    df_notion["date certification"].between(
+        pd.to_datetime(sel_date_notion[0]),
+        pd.to_datetime(sel_date_notion[1])
+    ),
+    "peserta"
+].sum()
+
+
     # -------------------------
     # 4. Stat Cards (Notion & BigData)
     # -------------------------
     # pastikan numeric
     df_notion["peserta"] = pd.to_numeric(df_notion["peserta"], errors="coerce")
     df_bigdata["selesai"] = pd.to_numeric(df_bigdata["selesai"], errors="coerce")
+
 
     total_selesai_all_time = df_bigdata["selesai"].fillna(0).sum()
     total_selesai_filtered = filtered_bigdata_same_date["selesai"].fillna(0).sum()
