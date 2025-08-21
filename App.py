@@ -127,12 +127,12 @@ with tab1:
         Bagian Overview menampilkan *ringkasan keseluruhan data sertifikasi* sesuai rentang tanggal yang dipilih.
 
         Informasi yang ditampilkan:
-        1. *Total Pendaftar* – jumlah seluruh peserta yang mendaftar sertifikasi.
-        2. *Total Dibatalkan* – jumlah pendaftar yang membatalkan sertifikasi.
-        3. *Selesai* – jumlah sertifikasi yang sudah diselesaikan oleh peserta.
-        4. *Grafik jumlah pendaftar per bulan* – memvisualisasikan tren pendaftaran dari waktu ke waktu.
+        1. Total Pendaftar – jumlah seluruh peserta yang mendaftar sertifikasi.
+        2. Total Dibatalkan – jumlah pendaftar yang membatalkan sertifikasi.
+        3. Selesai – jumlah pendaftar yang sudah berhasil menyelesaikan semua persyaratan administrasi
+        4. Grafik jumlah pendaftar per bulan – memvisualisasikan tren pendaftaran dari waktu ke waktu.
 
-        Fungsi bagian ini adalah untuk memberikan *pandangan cepat* mengenai performa sertifikasi, sehingga pengguna dapat:
+        Fungsi bagian ini adalah untuk memberikan pandangan cepat mengenai performa sertifikasi, sehingga pengguna dapat:
         - Menilai volume partisipasi peserta secara keseluruhan.
         - Mengidentifikasi tren pendaftaran bulanan.
         - Membuat keputusan strategis terkait perencanaan dan pengelolaan sertifikasi.
@@ -241,12 +241,12 @@ with tab2:
     # -------------------------
     with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian By Notion menampilkan **perbandingan peserta sertifikasi dari Notion** dengan **jumlah sertifikasi selesai berdasarkan data Basys**.
+        Bagian By Notion ini menampilkan perbandingan peserta sertifikasi berdasarkan data Notion  dengan jumlah peserta selesai berdasarkan data Basys.
 
         Informasi yang ditampilkan:
-        1. **Total Peserta (By Notion)** – jumlah peserta yang tercatat di Notion (**seluruh data Excel**).
-        2. **Total Selesai (By Basys)** – jumlah sertifikasi yang selesai sesuai data Basys (**seluruh data BigData**).
-        3. **Grafik Trend** – membandingkan jumlah peserta Notion vs Selesai Basys per bulan (sesuai tanggal pilihan).
+        1. Total Peserta (By Notion) – jumlah peserta yang tercatat di Notion.
+        2. Total Selesai (By Basys) – jumlah sertifikasi yang selesai sesuai data Basys.
+        3. Grafik Trend – membandingkan jumlah peserta Notion vs Selesai Basys per bulan sesuai tanggal pilihan.
 
         Fungsi bagian ini:
         - Memudahkan monitoring kesesuaian data Notion dengan data resmi Basys.
