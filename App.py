@@ -180,31 +180,36 @@ with tab2:
     if selected_sertifikasi != "All":
         filtered_notion_chart = filtered_notion_chart[filtered_notion_chart["nama sertifikasi"] == selected_sertifikasi]
 
+        # -------------------------
+    # 5. Stat Cards (Notion & BigData)
     # -------------------------
-    # 5. Stat Cards
-    # -------------------------
-colA, colB, colC = st.columns(3)
+    # pastikan numeric
+    df_notion["peserta"] = pd.to_numeric(df_notion["peserta"], errors="coerce")
+    df_bigdata["selesai"] = pd.to_numeric(df_bigdata["selesai"], errors="coerce")
 
-with colA:
-    # Total Peserta (By Notion - ikut filter)
-    df_notion_filtered["peserta"] = pd.to_numeric(df_notion_filtered["peserta"], errors="coerce")
-    total_peserta_notion = df_notion_filtered["peserta"].sum()
-    stat_card("Total Peserta (By Notion)", total_peserta_notion, "⭐")
+    total_peserta_notion = df_notion.loc[
+        df_notion["date certification"].between(
+            pd.to_datetime(sel_date_notion[0]),
+            pd.to_datetime(sel_date_notion[1])
+        ) if selected_sertifikasi == "All" else
+        (df_notion["date certification"].between(
+            pd.to_datetime(sel_date_notion[0]),
+            pd.to_datetime(sel_date_notion[1])
+        ) & (df_notion["nama sertifikasi"] == selected_sertifikasi)),
+        "peserta"
+    ].sum()
 
-with colB:
-    # Total Selesai (All Time - statis)
-    total_selesai_all = df_bigdata["selesai"].sum()
-    stat_card("Total Selesai (BigData - All Time)", total_selesai_all, "✅")
+    total_selesai_all_time = df_bigdata["selesai"].fillna(0).sum()
+    total_selesai_filtered = filtered_bigdata_same_date["selesai"].fillna(0).sum()
 
-with colC:
-    # Total Selesai (Filtered by Date Range)
-    df_bigdata["date certification"] = pd.to_datetime(df_bigdata["date certification"], errors="coerce")
-    filtered_bigdata_same_date = df_bigdata[
-        (df_bigdata["date certification"] >= pd.to_datetime(sel_date_notion[0])) &
-        (df_bigdata["date certification"] <= pd.to_datetime(sel_date_notion[1]))
-    ]
-    total_selesai_filtered = filtered_bigdata_same_date["selesai"].sum()
-    stat_card("Total Selesai (Filtered)", total_selesai_filtered, "📅")
+    colA, colB, colC = st.columns(3)
+    with colA:
+        stat_card("Total Peserta (By Notion)", int(total_peserta_notion), "⭐")
+    with colB:
+        stat_card("Total Selesai (BigData - All Time)", int(total_selesai_all_time), "✅")
+    with colC:
+        stat_card("Total Selesai (Filtered)", int(total_selesai_filtered), "📅")
+
 
 
     # -------------------------
