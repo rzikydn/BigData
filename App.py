@@ -172,9 +172,6 @@ with tab2:
         (df_notion["date certification"].dt.date >= sel_date_notion[0]) &
         (df_notion["date certification"].dt.date <= sel_date_notion[1])
     ]
-    if selected_sertifikasi != "All":
-        filtered_notion_chart = filtered_notion_chart[filtered_notion_chart["nama sertifikasi"] == selected_sertifikasi]
-
 
     # -------------------------
     # 4. Stat Cards (Notion & BigData)
