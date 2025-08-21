@@ -204,11 +204,11 @@ with tab2:
 
     colA, colB, colC = st.columns(3)
     with colA:
-        stat_card("Total Selesai - Statis By Basys)", int(total_selesai_all_time), "📌")
+        stat_card("Total Selesai - Statis By Basys", int(total_selesai_all_time), "📌")
     with colB:
-        stat_card("Total Peserta - By Notion)", int(total_peserta_notion), "⭐")
+        stat_card("Total Peserta - By Notion", int(total_peserta_notion), "⭐")
     with colC:
-        stat_card("Total Selesai (Dinamis (By Basys)", int(total_selesai_filtered), "📅")
+        stat_card("Total Selesai Dinamis - By Basys", int(total_selesai_filtered), "✅")
 
 
 
