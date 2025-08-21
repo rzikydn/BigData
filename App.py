@@ -149,7 +149,7 @@ with tab2:
     min_date_notion = df_notion["date certification"].min().date()
     max_date_notion = df_notion["date certification"].max().date()
     sel_date_notion = st.date_input(
-        "📅 Pilih rentang tanggal untuk chart notion :",
+        "📅 Pilih rentang tanggal :",
         (min_date_notion, max_date_notion),
         min_value=min_date_notion,
         max_value=max_date_notion,
@@ -272,10 +272,7 @@ with tab3:
 
     # Filter jenis dan instansi
     jenis_list_inst = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
-    instansi_list_inst = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
-    col1, col2 = st.columns(2)
-    sel_jenis_inst = col1.selectbox("Jenis Sertifikasi", jenis_list_inst, key="jenis_institution")
-    sel_instansi_inst = col2.selectbox("Instansi", instansi_list_inst, key="instansi_institution")
+    sel_jenis_inst = st.selectbox("Jenis Sertifikasi", jenis_list_inst, key="jenis_institution")
 
     # Filter data
     filtered_df_inst = df_bigdata[
@@ -284,9 +281,6 @@ with tab3:
     ]
     if sel_jenis_inst != "All":
         filtered_df_inst = filtered_df_inst[filtered_df_inst["jenis sertifikasi"] == sel_jenis_inst]
-    if sel_instansi_inst != "All":
-        filtered_df_inst = filtered_df_inst[filtered_df_inst["instansi"] == sel_instansi_inst]
-    filtered_df_inst["status"] = filtered_df_inst.apply(get_status, axis=1)
 
     # Stat cards
     colA, colB = st.columns(2)
