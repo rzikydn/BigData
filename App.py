@@ -213,47 +213,35 @@ with tab2:
 
 
     # -------------------------
-# 6. Chart Notion vs BigData per bulan
-# -------------------------
-df_notion_month = (
-    filtered_notion_chart
-    .groupby(filtered_notion_chart["date certification"].dt.to_period("M"))["peserta"]
-    .sum()
-    .reset_index(name="pendaftar")
-)
-df_bigdata_month = (
-    filtered_bigdata_same_date
-    .groupby(filtered_bigdata_same_date["date certification"].dt.to_period("M"))["selesai"]
-    .sum()
-    .reset_index(name="selesai")
-)
-df_compare = pd.merge(
-    df_notion_month, df_bigdata_month,
-    left_on="date certification", right_on="date certification",
-    how="outer"
-).fillna(0)
-df_compare["date certification"] = df_compare["date certification"].astype(str)
+    # 6. Chart Notion vs BigData per bulan
+    # -------------------------
+    df_notion_month = (
+        filtered_notion_chart
+        .groupby(filtered_notion_chart["date certification"].dt.to_period("M"))["peserta"]
+        .sum()
+        .reset_index(name="pendaftar")
+    )
+    df_bigdata_month = (
+        filtered_bigdata_same_date
+        .groupby(filtered_bigdata_same_date["date certification"].dt.to_period("M"))["selesai"]
+        .sum()
+        .reset_index(name="selesai")
+    )
+    df_compare = pd.merge(
+        df_notion_month, df_bigdata_month,
+        left_on="date certification", right_on="date certification",
+        how="outer"
+    ).fillna(0)
+    df_compare["date certification"] = df_compare["date certification"].astype(str)
 
-# Line Chart
-fig_line = px.line(
-    df_compare,
-    x="date certification",
-    y=["pendaftar", "selesai"],
-    markers=True,
-    title="Trend Peserta Notion vs Selesai BigData"
-)
-st.plotly_chart(fig_line, use_container_width=True)
-
-# -------------------------
-# 7. Stat Cards dari df_compare
-# -------------------------
-col1, col2 = st.columns(2)
-with col1:
-    total_peserta_compare = int(df_compare["pendaftar"].sum())
-    stat_card("Total Peserta (By Notion)", total_peserta_compare, "⭐")
-with col2:
-    total_selesai_compare = int(df_compare["selesai"].sum())
-    stat_card("Total Selesai (Dinamis By BigData)", total_selesai_compare, "📅")
+    fig_line = px.line(
+        df_compare,
+        x="date certification",
+        y=["pendaftar", "selesai"],
+        markers=True,
+        title="Trend Peserta Notion vs Selesai BigData"
+    )
+    st.plotly_chart(fig_line, use_container_width=True)
 
     # -------------------------
     # 7. Info Box
