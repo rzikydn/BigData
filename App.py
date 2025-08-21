@@ -180,18 +180,6 @@ with tab2:
     df_notion["peserta"] = pd.to_numeric(df_notion["peserta"], errors="coerce")
     df_bigdata["selesai"] = pd.to_numeric(df_bigdata["selesai"], errors="coerce")
 
-    total_peserta_notion = df_notion.loc[
-        df_notion["date certification"].between(
-            pd.to_datetime(sel_date_notion[0]),
-            pd.to_datetime(sel_date_notion[1])
-        ) if selected_sertifikasi == "All" else
-        (df_notion["date certification"].between(
-            pd.to_datetime(sel_date_notion[0]),
-            pd.to_datetime(sel_date_notion[1])
-        ) & (df_notion["nama sertifikasi"] == selected_sertifikasi)),
-        "peserta"
-    ].sum()
-
     total_selesai_all_time = df_bigdata["selesai"].fillna(0).sum()
     total_selesai_filtered = filtered_bigdata_same_date["selesai"].fillna(0).sum()
 
