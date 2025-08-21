@@ -157,21 +157,16 @@ with tab2:
     )
 
     # -------------------------
-    # 2. Filter Sertifikasi (hanya untuk chart)
-    # -------------------------
-    sertifikasi_list = ["All"] + sorted(df_notion["nama sertifikasi"].dropna().unique())
-    selected_sertifikasi = st.selectbox("Nama Sertifikasi untuk Chart", sertifikasi_list, key="selected_notion")
-
-    # -------------------------
-    # 3. Filter BigData untuk Chart (By Notion)
+    # 2. Filter BigData untuk Chart (By Notion)
     # -------------------------
     filtered_bigdata_same_date = df_bigdata[
         (df_bigdata["date certification"].dt.date >= sel_date_notion[0]) &
         (df_bigdata["date certification"].dt.date <= sel_date_notion[1])
     ]
 
+
     # -------------------------
-    # 4. Filter Notion untuk Chart
+    # 3. Filter Notion untuk Chart
     # -------------------------
     filtered_notion_chart = df_notion[
         (df_notion["date certification"].dt.date >= sel_date_notion[0]) &
@@ -180,8 +175,9 @@ with tab2:
     if selected_sertifikasi != "All":
         filtered_notion_chart = filtered_notion_chart[filtered_notion_chart["nama sertifikasi"] == selected_sertifikasi]
 
-        # -------------------------
-    # 5. Stat Cards (Notion & BigData)
+
+    # -------------------------
+    # 4. Stat Cards (Notion & BigData)
     # -------------------------
     # pastikan numeric
     df_notion["peserta"] = pd.to_numeric(df_notion["peserta"], errors="coerce")
@@ -213,7 +209,7 @@ with tab2:
 
 
     # -------------------------
-    # 6. Chart Notion vs BigData per bulan
+    # 5. Chart Notion vs BigData per bulan
     # -------------------------
     df_notion_month = (
         filtered_notion_chart
@@ -244,7 +240,7 @@ with tab2:
     st.plotly_chart(fig_line, use_container_width=True)
 
     # -------------------------
-    # 7. Info Box
+    # 6. Info Box
     # -------------------------
     with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
