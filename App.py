@@ -206,9 +206,9 @@ with tab2:
     with colA:
         stat_card("Total Peserta (By Notion)", int(total_peserta_notion), "⭐")
     with colB:
-        stat_card("Total Selesai (BigData - All Time)", int(total_selesai_all_time), "✅")
+        stat_card("Total Selesai (Statis (By Basys)", int(total_selesai_all_time), "✅")
     with colC:
-        stat_card("Total Selesai (Filtered)", int(total_selesai_filtered), "📅")
+        stat_card("Total Selesai (Dinamis (By Basys)", int(total_selesai_filtered), "📅")
 
 
 
