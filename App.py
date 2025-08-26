@@ -124,7 +124,7 @@ with tab1:
     # Info box / expander untuk penjelasan
     with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian Overview menampilkan *ringkasan keseluruhan data sertifikasi* sesuai rentang tanggal yang dipilih.
+        Bagian Overview menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal yang dipilih.
 
         Informasi yang ditampilkan:
         1. Total Pendaftar – jumlah seluruh peserta yang mendaftar sertifikasi.
@@ -239,7 +239,7 @@ with tab2:
     # -------------------------
     # 6. Info Box
     # -------------------------
-    with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
+    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
         Bagian By Notion ini menampilkan perbandingan peserta sertifikasi berdasarkan data Notion  dengan jumlah peserta selesai berdasarkan data Basys.
 
@@ -323,7 +323,7 @@ with tab3:
     # Info box
     with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
         st.markdown("""
-        Bagian ini menampilkan *5 instansi dengan jumlah pendaftar sertifikasi terbanyak* berdasarkan rentang tanggal yang dipilih.
+        Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
 
         Manfaat informasi ini:
         1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
