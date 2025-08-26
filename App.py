@@ -43,7 +43,7 @@ def load_bigdata():
         if not response.data: break
         all_data.extend(response.data)
         offset += page_size
-    df = pd.DataFrame(all_data)
+    df = pd.DataFrame(all_data), min
     if not df.empty:
         df["date certification"] = pd.to_datetime(df["date certification"])
     return df
