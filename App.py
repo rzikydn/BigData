@@ -163,7 +163,7 @@ with tab2:
     sel_instansi_notion = st.selectbox("🏢 Pilih Instansi :", instansi_list_notion, key="instansi_notion")
 
     # -------------------------
-    # 3. Merge Notion & BigData
+    # 3. Merge Notion & BigData (untuk mendapatkan instansi)
     # -------------------------
     df_merge = pd.merge(
         df_notion,
@@ -173,32 +173,40 @@ with tab2:
     )
 
     # -------------------------
-    # 4. Filter tanggal
+    # 4. Filter tanggal & instansi Notion
     # -------------------------
     df_merge = df_merge[
         (df_merge['date certification'] >= pd.to_datetime(sel_date_notion[0])) &
         (df_merge['date certification'] <= pd.to_datetime(sel_date_notion[1]))
     ]
 
-    # -------------------------
-    # 5. Filter instansi jika dipilih
-    # -------------------------
     if sel_instansi_notion != "All":
         df_merge = df_merge[df_merge['instansi'] == sel_instansi_notion]
 
     # -------------------------
-    # 6. Stat Cards
+    # 5. Stat Cards
     # -------------------------
     df_merge['peserta'] = pd.to_numeric(df_merge['peserta'], errors='coerce')
     df_bigdata['selesai'] = pd.to_numeric(df_bigdata['selesai'], errors='coerce')
 
+    # Total peserta Notion sesuai filter
     total_peserta = df_merge['peserta'].sum()
+
+    # Total selesai statis All Time
     total_selesai_all_time = df_bigdata['selesai'].fillna(0).sum()
 
-    # Total selesai filtered sesuai tanggal & instansi
-    total_selesai_filtered = df_merge.merge(
-        df_bigdata[['nama sertifikasi', 'selesai']], on='nama sertifikasi', how='left'
-    )['selesai'].fillna(0).sum()
+    # Total selesai dinamis sesuai filter tanggal & instansi
+    filtered_bigdata_for_selesai = df_bigdata[
+        (df_bigdata['date certification'] >= pd.to_datetime(sel_date_notion[0])) &
+        (df_bigdata['date certification'] <= pd.to_datetime(sel_date_notion[1]))
+    ]
+
+    if sel_instansi_notion != "All":
+        filtered_bigdata_for_selesai = filtered_bigdata_for_selesai[
+            filtered_bigdata_for_selesai['instansi'] == sel_instansi_notion
+        ]
+
+    total_selesai_filtered = filtered_bigdata_for_selesai['selesai'].sum()
 
     colA, colB, colC = st.columns(3)
     with colA:
@@ -209,7 +217,7 @@ with tab2:
         stat_card("Total Selesai Dinamis - By Basys", int(total_selesai_filtered), "✅")
 
     # -------------------------
-    # 7. Chart Notion vs BigData per bulan
+    # 6. Chart Notion vs BigData per bulan
     # -------------------------
     df_month_notion = (
         df_merge.groupby(df_merge['date certification'].dt.to_period("M"))['peserta']
@@ -218,11 +226,7 @@ with tab2:
     )
 
     df_month_bigdata = (
-        df_bigdata[
-            (df_bigdata['date certification'] >= pd.to_datetime(sel_date_notion[0])) &
-            (df_bigdata['date certification'] <= pd.to_datetime(sel_date_notion[1]))
-        ]
-        .groupby(df_bigdata['date certification'].dt.to_period("M"))['selesai']
+        filtered_bigdata_for_selesai.groupby(filtered_bigdata_for_selesai['date certification'].dt.to_period("M"))['selesai']
         .sum()
         .reset_index(name='selesai')
     )
@@ -244,7 +248,7 @@ with tab2:
     st.plotly_chart(fig_line, use_container_width=True)
 
     # -------------------------
-    # 8. Info Box
+    # 7. Info Box
     # -------------------------
     with st.expander("ℹ️ FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
@@ -261,6 +265,7 @@ with tab2:
         - Menunjukkan tren pendaftaran dan penyelesaian sertifikasi dari waktu ke waktu.
         - Memungkinkan analisis per instansi tertentu.
         """)
+
 
 
 
