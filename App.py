@@ -295,7 +295,7 @@ with tab2:
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    st.subheader("🏆 5 TOP INSTANSI ")
+    st.subheader("🏆 5 TOP INSTANSIII ")
 
     # Filter tanggal
     min_date_inst = df_bigdata["date certification"].min().date()
