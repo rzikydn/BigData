@@ -11,6 +11,22 @@ import plotly.graph_objs as go
 
 
 # =========================
+# 0. Fungsi Helper Tambahan
+# =========================
+def normalize_date_input(sel_date):
+    """
+    Pastikan sel_date selalu tuple (start_date, end_date)
+    """
+    if isinstance(sel_date, tuple) or isinstance(sel_date, list):
+        if len(sel_date) == 2:
+            return sel_date
+        else:  # misal tuple panjangnya 1
+            return (sel_date[0], sel_date[0])
+    else:  # misal hanya 1 tanggal dipilih
+        return (sel_date, sel_date)
+
+
+# =========================
 # 1. Konfigurasi Supabase
 # =========================
 SUPABASE_URL = "https://aaxxsnilazypljkxoktx.supabase.co"
@@ -83,7 +99,13 @@ tab1, tab2, tab3 = st.tabs(["📈 Overview", "📝 By Notion", "🏢 By Institut
 with tab1:
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    sel_date = st.date_input("📅 Pilih rentang tanggal :", (min_date, max_date), min_date, max_date, key="date overview")
+    sel_date = st.date_input(
+        "📅 Pilih rentang tanggal :",
+        (min_date, max_date),
+        min_value=max_date,
+        key="date_overview"
+    )
+    sel_date = normalize_date_input(sel_date)
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
@@ -155,6 +177,7 @@ with tab2:
         max_value=max_date_notion,
         key="date_notion"
     )
+    sel_date_notion = normalize_date_input(sel_date_notion)
 
     # -------------------------
     # 2. Filter Instansi
@@ -272,18 +295,20 @@ with tab2:
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    st.subheader("🏢 VISUALISASI DATA PER INSTANSI")
+    st.subheader("🏆 5 TOP INSTANSI ")
 
     # Filter tanggal
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
     sel_date_inst = st.date_input(
         "📅 Pilih rentang tanggal :",
-        (min_date_inst, max_date_inst),
+        (min_date_inst, min_date_inst),
         min_value=min_date_inst,
         max_value=max_date_inst,
-        key="date_institution"
+        key="date certification"
     )
+    sel_date_inst = normalize_date_input(sel_date_inst) 
+    
 
     # Filter jenis dan instansi
     jenis_list_inst = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
