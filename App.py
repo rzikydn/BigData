@@ -40,11 +40,16 @@ def load_bigdata():
     all_data, offset, page_size = [], 0, 1000
     while True:
         response = supabase.table("bigdata").select("*").range(offset, offset+page_size-1).execute()
-        if not response.data: break
+        if not response.data: 
+            break
         all_data.extend(response.data)
         offset += page_size
     df = pd.DataFrame(all_data)
-    if not df.empty:
+    if df.empty:
+        # Pastikan kolom tetap ada agar tidak error
+        df = pd.DataFrame(columns=["nama sertifikasi", "jenis sertifikasi", "instansi",
+                                   "pendaftar", "pengajuan awal", "on progress", "dibatalkan", "selesai", "date certification"])
+    else:
         df["date certification"] = pd.to_datetime(df["date certification"])
     return df
 
@@ -52,11 +57,15 @@ def load_notion():
     all_data, offset, page_size = [], 0, 1000
     while True:
         response = supabase.table("notion").select("*").range(offset, offset+page_size-1).execute()
-        if not response.data: break
+        if not response.data: 
+            break
         all_data.extend(response.data)
         offset += page_size
     df = pd.DataFrame(all_data)
-    if not df.empty:
+    if df.empty:
+        # Pastikan kolom tetap ada
+        df = pd.DataFrame(columns=["id", "no", "nama sertifikasi", "peserta", "date certification"])
+    else:
         df["date certification"] = pd.to_datetime(df["date certification"])
     return df
 
