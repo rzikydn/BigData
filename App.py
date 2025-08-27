@@ -136,13 +136,13 @@ with tab1:
 with tab2:
     st.subheader("💡 VISUALISASI DATA NOTION")
 
-    # === Dropdown filter berdasarkan instansi (nama sertifikasi) ===
-    instansi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
-    selected_instansi = st.selectbox("🏢 Pilih Instansi (Nama Sertifikasi):", instansi_options)
+    # === Dropdown filter berdasarkan nama sertifikasi (Notion) ===
+    sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
+    selected_sertifikasi = st.selectbox("🏢 Pilih Nama Sertifikasi:", sertifikasi_options)
 
-    # Filter data notion sesuai instansi
-    if selected_instansi != "Semua":
-        df_notion_filtered = df_notion[df_notion["nama sertifikasi"] == selected_instansi]
+    # Filter data notion sesuai pilihan
+    if selected_sertifikasi != "Semua":
+        df_notion_filtered = df_notion[df_notion["nama sertifikasi"] == selected_sertifikasi]
     else:
         df_notion_filtered = df_notion.copy()
 
@@ -156,38 +156,54 @@ with tab2:
     else:
         start_date, end_date = sel_date_notion, sel_date_notion
 
-    # Filter sesuai tanggal
+    # === Filter BigData (ikut tanggal & instansi bila dipilih) ===
     filtered_bigdata_same_date = df_bigdata[
         (df_bigdata["date certification"].dt.date >= start_date) &
         (df_bigdata["date certification"].dt.date <= end_date)
     ]
+    if selected_sertifikasi != "Semua":
+        filtered_bigdata_same_date = filtered_bigdata_same_date[
+            filtered_bigdata_same_date["instansi"] == selected_sertifikasi
+        ]
+
+    # === Filter Notion chart ===
     filtered_notion_chart = df_notion_filtered[
         (df_notion_filtered["date certification"].dt.date >= start_date) &
         (df_notion_filtered["date certification"].dt.date <= end_date)
     ]
 
-    # Hitung total peserta Notion
+    # Pastikan numeric dan aman dari NaN
+    df_notion_filtered["peserta"] = pd.to_numeric(df_notion_filtered["peserta"], errors="coerce").fillna(0)
+    df_bigdata["selesai"] = pd.to_numeric(df_bigdata["selesai"], errors="coerce").fillna(0)
+
+    # Hitung total peserta (Notion)
     total_peserta_notion = df_notion_filtered.loc[
         df_notion_filtered["date certification"].between(pd.to_datetime(start_date), pd.to_datetime(end_date)),
         "peserta"
     ].sum()
 
-    # Pastikan numeric
-    df_notion_filtered["peserta"] = pd.to_numeric(df_notion_filtered["peserta"], errors="coerce")
-    df_bigdata["selesai"] = pd.to_numeric(df_bigdata["selesai"], errors="coerce")
+    # Hitung total selesai (Basys)
+    total_selesai_all_time = df_bigdata["selesai"].sum()
+    total_selesai_filtered = filtered_bigdata_same_date["selesai"].sum()
 
-    total_selesai_all_time = df_bigdata["selesai"].fillna(0).sum()
-    total_selesai_filtered = filtered_bigdata_same_date["selesai"].fillna(0).sum()
-
+    # === Stat Cards ===
     colA, colB, colC = st.columns(3)
     with colA:
-        stat_card("Total Selesai - Statis By Basys", int(total_selesai_all_time), "📌")
+        stat_card("Total Selesai (Basys - All Time)", int(total_selesai_all_time), "📌")
     with colB:
-        stat_card(f"Total Peserta - {selected_instansi if selected_instansi!='Semua' else 'Notion'}", int(total_peserta_notion), "⭐")
+        stat_card(
+            f"Total Peserta (Notion - {selected_sertifikasi if selected_sertifikasi!='Semua' else 'Semua'})",
+            int(total_peserta_notion),
+            "⭐"
+        )
     with colC:
-        stat_card("Total Selesai Dinamis - By Basys", int(total_selesai_filtered), "✅")
+        stat_card(
+            f"Total Selesai (Basys - {selected_sertifikasi if selected_sertifikasi!='Semua' else 'Semua'})",
+            int(total_selesai_filtered),
+            "✅"
+        )
 
-    # Chart Notion vs BigData per bulan
+    # === Chart Notion vs Basys per bulan ===
     df_notion_month = (
         filtered_notion_chart
         .groupby(filtered_notion_chart["date certification"].dt.to_period("M"))["peserta"]
@@ -200,6 +216,8 @@ with tab2:
         .sum()
         .reset_index(name="selesai")
     )
+
+    # Merge Notion & Basys untuk chart
     df_compare = pd.merge(
         df_notion_month, df_bigdata_month,
         left_on="date certification", right_on="date certification",
@@ -207,14 +225,16 @@ with tab2:
     ).fillna(0)
     df_compare["date certification"] = df_compare["date certification"].astype(str)
 
+    # Line chart perbandingan
     fig_line = px.line(
         df_compare,
         x="date certification",
         y=["pendaftar", "selesai"],
         markers=True,
-        title=f"Trend Peserta Notion ({selected_instansi}) vs Selesai BigData"
+        title=f"Trend Peserta Notion ({selected_sertifikasi}) vs Selesai Basys"
     )
     st.plotly_chart(fig_line, use_container_width=True)
+
 
 
 # ===== Tab 3: By Institution =====
