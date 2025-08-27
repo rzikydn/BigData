@@ -134,7 +134,7 @@ with tab1:
 
 # ===== Tab 2: By Notion =====
 with tab2:
-    st.subheader("💡 VISUALISASI DATA NOTION")
+    st.subheader("💡 VISUALISASI DATA NOTION & BASYS")
 
     # === Dropdown filter berdasarkan nama sertifikasi (Notion) ===
     sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
@@ -231,7 +231,7 @@ with tab2:
         x="date certification",
         y=["pendaftar", "selesai"],
         markers=True,
-        title=f"Trend Peserta Notion ({selected_sertifikasi}) vs Selesai Basys"
+        title=f"PERBANDINGAN DATA NOTION DAN BASYS"
     )
     st.plotly_chart(fig_line, use_container_width=True)
 
@@ -239,7 +239,7 @@ with tab2:
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    st.subheader("🏢 VISUALISASI DATA PER INSTANSI")
+    st.subheader("🏆VISUALISASI DATA PER INSTANSI")
 
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
@@ -293,7 +293,7 @@ with tab3:
         showlegend=False
     ))
     fig_lolli.update_layout(
-        title="Top 5 Instansi Berdasarkan Pendaftar (Lollipop Chart)",
+        title="TOP 5 INSTANSI BERDASARKAN DATA BASYS PESERTA DAN SELESAI",
         xaxis_title="Jumlah Pendaftar",
         yaxis_title="",
         showlegend=False
