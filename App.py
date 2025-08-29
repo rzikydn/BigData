@@ -134,7 +134,7 @@ with tab1:
 
 
     # Info box / expander untuk penjelasan
-    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
+    with st.expander("🔽 FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
         Bagian Overview menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal yang dipilih.
 
@@ -205,10 +205,8 @@ with tab2:
     total_selesai_all_time = df_bigdata["selesai"].sum()
     total_selesai_filtered = filtered_bigdata_same_date["selesai"].sum()
 
-    # === Stat Cards ===
-    colA, colB, colC = st.columns(3)
-    with colA:
-        stat_card("Total Selesai (Basys - All Time)", int(total_selesai_all_time), "📌")
+        # === Stat Cards (tanpa all-time) ===
+    colB, colC = st.columns(2)
     with colB:
         stat_card(
             f"Total Peserta (Notion - {selected_sertifikasi if selected_sertifikasi!='Semua' else 'Semua'})",
@@ -221,6 +219,7 @@ with tab2:
             int(total_selesai_filtered),
             "✅"
         )
+
 
     # === Chart Notion vs Basys per bulan ===
     df_notion_month = (
@@ -257,7 +256,7 @@ with tab2:
 
       # Info Box Notion
     # -------------------------
-    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
+    with st.expander("🔽 FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
         Bagian By Notion ini menampilkan perbandingan peserta sertifikasi berdasarkan data Notion  dengan jumlah peserta selesai berdasarkan data Basys.
 
@@ -340,7 +339,7 @@ with tab3:
     st.plotly_chart(fig_lolli, use_container_width=True)
 
      # Info box
-    with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
+    with st.expander("🔽 Fungsi Bagian Ini", expanded=True):
         st.markdown("""
         Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
 
