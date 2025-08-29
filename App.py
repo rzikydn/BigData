@@ -132,6 +132,25 @@ with tab1:
     fig_over.update_traces(textposition="outside")
     st.plotly_chart(fig_over, use_container_width=True)
 
+
+    # Info box / expander untuk penjelasan
+    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
+        st.markdown("""
+        Bagian Overview menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal yang dipilih.
+
+        Informasi yang ditampilkan:
+        1. Total Pendaftar – jumlah seluruh peserta yang mendaftar sertifikasi.
+        2. Total Dibatalkan – jumlah pendaftar yang membatalkan sertifikasi.
+        3. Selesai – jumlah pendaftar yang sudah berhasil menyelesaikan semua persyaratan administrasi
+        4. Grafik jumlah pendaftar per bulan – memvisualisasikan tren pendaftaran dari waktu ke waktu.
+
+        Fungsi bagian ini adalah untuk memberikan pandangan cepat mengenai performa sertifikasi, sehingga pengguna dapat:
+        - Menilai volume partisipasi peserta secara keseluruhan.
+        - Mengidentifikasi tren pendaftaran bulanan.
+        - Membuat keputusan strategis terkait perencanaan dan pengelolaan sertifikasi.
+        """)
+
+
 # ===== Tab 2: By Notion =====
 with tab2:
     st.subheader("💡 VISUALISASI DATA NOTION & BASYS")
@@ -236,6 +255,26 @@ with tab2:
     st.plotly_chart(fig_line, use_container_width=True)
 
 
+      # Info Box Notion
+    # -------------------------
+    with st.expander("ℹ FUNGSI BAGIAN INI", expanded=True):
+        st.markdown("""
+        Bagian By Notion ini menampilkan perbandingan peserta sertifikasi berdasarkan data Notion  dengan jumlah peserta selesai berdasarkan data Basys.
+
+        Informasi yang ditampilkan:
+        1. Total Peserta (By Notion) – jumlah peserta yang tercatat di Notion.
+        2. Total Selesai (By Basys) – jumlah sertifikasi yang selesai sesuai data Basys.
+        3. Grafik Trend – membandingkan jumlah peserta Notion vs Selesai Basys per bulan sesuai tanggal pilihan.
+
+        Fungsi bagian ini:
+        - Memudahkan monitoring kesesuaian data Notion dengan data resmi Basys.
+        - Menunjukkan tren pendaftaran dan penyelesaian sertifikasi dari waktu ke waktu.
+        """)
+
+
+
+
+
 
 # ===== Tab 3: By Institution =====
 with tab3:
@@ -299,3 +338,17 @@ with tab3:
         showlegend=False
     )
     st.plotly_chart(fig_lolli, use_container_width=True)
+
+     # Info box
+    with st.expander("ℹ Fungsi Bagian Ini", expanded=True):
+        st.markdown("""
+        Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
+
+        Manfaat informasi ini:
+        1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
+        2. Membantu penyelenggara memahami distribusi peserta per instansi.
+        3. Mempermudah perencanaan alokasi sumber daya dan layanan untuk instansi tertentu.
+        """)
+
+
+# -- End of Dashboard -- #
