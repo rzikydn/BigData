@@ -83,7 +83,7 @@ def safe_date_input(label, min_date, max_date, key):
 # =========================
 st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
-tab1, tab2, tab3 = st.tabs(["📈 Overview", "📝 By Notion", "🏢 By Institution"])
+tab1, tab2, tab3 = st.tabs(["📈 Overview", "✍️ By Notion", "🏛️ By Institution"])
 
 # ===== Tab 1: Overview =====
 with tab1:
@@ -136,13 +136,13 @@ with tab1:
     # Info box / expander untuk penjelasan
     with st.expander("🔽 FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian Overview menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal yang dipilih.
+        Pada bagian overview ini berguna untuk menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal, jenis sertifikasi, dan instansi yang dipilih.
 
         Informasi yang ditampilkan:
         1. Total Pendaftar – jumlah seluruh peserta yang mendaftar sertifikasi.
-        2. Total Dibatalkan – jumlah pendaftar yang membatalkan sertifikasi.
+        2. Total Dibatalkan – jumlah pendaftar yang membatalkan/ dibatalkannya jadwal sertifikasi.
         3. Selesai – jumlah pendaftar yang sudah berhasil menyelesaikan semua persyaratan administrasi
-        4. Grafik jumlah pendaftar per bulan – memvisualisasikan tren pendaftaran dari waktu ke waktu.
+        4. Grafik jumlah pendaftar per bulan – memvisualisasikan tren pendaftaran dari waktu ke waktu agar memudahkan user melihat perbandingan angka.
 
         Fungsi bagian ini adalah untuk memberikan pandangan cepat mengenai performa sertifikasi, sehingga pengguna dapat:
         - Menilai volume partisipasi peserta secara keseluruhan.
@@ -153,7 +153,7 @@ with tab1:
 
 # ===== Tab 2: By Notion =====
 with tab2:
-    st.subheader("💡 VISUALISASI DATA NOTION & BASYS")
+    st.subheader("💡 VISUALISASI DATA PERBANDINGAN DATA NOTION & BASYS")
 
     # === Dropdown filter berdasarkan nama sertifikasi (Notion) ===
     sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
@@ -258,7 +258,7 @@ with tab2:
     # -------------------------
     with st.expander("🔽 FUNGSI BAGIAN INI", expanded=True):
         st.markdown("""
-        Bagian By Notion ini menampilkan perbandingan peserta sertifikasi berdasarkan data Notion  dengan jumlah peserta selesai berdasarkan data Basys.
+        Pada bagian By Notion ini berguna untuk menampilkan perbandingan peserta sertifikasi berdasarkan data Notion dengan jumlah peserta selesai berdasarkan data Basys.
 
         Informasi yang ditampilkan:
         1. Total Peserta (By Notion) – jumlah peserta yang tercatat di Notion.
@@ -277,7 +277,7 @@ with tab2:
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    st.subheader("🏆VISUALISASI DATA PER INSTANSI")
+    st.subheader("🏆VISUALISASI DATA TOP 5 INSTANSI")
 
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
@@ -341,7 +341,7 @@ with tab3:
      # Info box
     with st.expander("🔽 Fungsi Bagian Ini", expanded=True):
         st.markdown("""
-        Bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
+        Pada bagian ini menampilkan 5 instansi dengan jumlah pendaftar sertifikasi terbanyak berdasarkan rentang tanggal yang dipilih.
 
         Manfaat informasi ini:
         1. Mengetahui instansi mana yang paling aktif mendorong karyawannya mengikuti sertifikasi.
