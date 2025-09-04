@@ -87,7 +87,7 @@ tab1, tab2, tab3 = st.tabs(["📈 Overview", "✍️ By Notion", "🏛️ By Ins
 
 # ===== Tab 1: Overview =====
 with tab1:
-    st.subheader("🎯VISUALISASI DATA SERTIFIKASI BY BASYS")
+    st.subheader("VISUALISASI DATA SERTIFIKASI BY BASYS")
 
     #-- Filter Tanggal--#
     min_date = df_bigdata["date certification"].min().date()
@@ -156,7 +156,7 @@ with tab1:
 
 # ===== Tab 2: By Notion =====
 with tab2:
-    st.subheader("💡 VISUALISASI DATA PERBANDINGAN DATA NOTION & BASYS")
+    st.subheader("VISUALISASI DATA PERBANDINGAN DATA NOTION & BASYS")
 
     # === Dropdown filter berdasarkan nama sertifikasi (Notion) ===
     sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
@@ -280,7 +280,7 @@ with tab2:
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    st.subheader("🎖️VISUALISASI DATA TOP 5 INSTANSI")
+    st.subheader("VISUALISASI DATA TOP 5 INSTANSI")
  
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
