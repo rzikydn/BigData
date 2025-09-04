@@ -160,7 +160,7 @@ with tab2:
 
     # === Dropdown filter berdasarkan nama sertifikasi (Notion) ===
     sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
-    selected_sertifikasi = st.selectbox("🏢 Pilih Nama Instansi:", sertifikasi_options)
+    selected_sertifikasi = st.selectbox("🏢 Pilih Nama Instansi :", sertifikasi_options)
 
     # Filter data notion sesuai pilihan
     if selected_sertifikasi != "Semua":
