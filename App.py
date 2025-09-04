@@ -280,8 +280,8 @@ with tab2:
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    st.subheader("🏆VISUALISASI DATA TOP 5 INSTANSI")
-
+    st.subheader("🎖️VISUALISASI DATA TOP 5 INSTANSI")
+ 
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
     sel_date_inst = safe_date_input("📅 Pilih rentang tanggal :", min_date_inst, max_date_inst, key="date_institution")
