@@ -75,12 +75,12 @@ def dual_date_input(label_prefix, min_date, max_date, key_prefix):
     """2 input tanggal (mulai & akhir) dengan default sama2 min_date"""
     col1, col2 = st.columns(2)
     start_date = col1.date_input(
-        f"{label_prefix} - Mulai",
+        f"{label_prefix} - awal",
         min_value=min_date, max_value=max_date,
         value=min_date, key=f"{key_prefix}_start"
     )
     end_date = col2.date_input(
-        f"{label_prefix} - Akhir",
+        f"{label_prefix} - akhir",
         min_value=min_date, max_value=max_date,
         value=min_date,   # 🔹 revisi: default ke min_date
         key=f"{key_prefix}_end"
@@ -103,7 +103,7 @@ with tab1:
     #-- Filter Tanggal--#
     min_date = df_bigdata["date certification"].min().date()
     max_date = df_bigdata["date certification"].max().date()
-    start_date, end_date = dual_date_input("📅 Pilih Tanggal", min_date, max_date, key_prefix="overview")
+    start_date, end_date = dual_date_input("📅 Pilih tanggal", min_date, max_date, key_prefix="overview")
 
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
@@ -158,7 +158,7 @@ with tab2:
 
     min_date_notion = df_notion_filtered["date certification"].min().date()
     max_date_notion = df_notion_filtered["date certification"].max().date()
-    start_date, end_date = dual_date_input("📅 Pilih Tanggal", min_date_notion, max_date_notion, key_prefix="notion")
+    start_date, end_date = dual_date_input("📅 Pilih tanggal", min_date_notion, max_date_notion, key_prefix="notion")
 
     # === Filter BigData
     filtered_bigdata_same_date = df_bigdata[
@@ -210,7 +210,7 @@ with tab3:
 
     min_date_inst = df_bigdata["date certification"].min().date()
     max_date_inst = df_bigdata["date certification"].max().date()
-    start_date, end_date = dual_date_input("📅 Pilih Tanggal", min_date_inst, max_date_inst, key_prefix="institution")
+    start_date, end_date = dual_date_input("📅 Pilih tanggal", min_date_inst, max_date_inst, key_prefix="institution")
 
     filtered_df_inst = df_bigdata[
         (df_bigdata["date certification"].dt.date >= start_date) &
