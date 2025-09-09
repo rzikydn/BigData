@@ -75,12 +75,12 @@ def dual_date_input(label_prefix, min_date, max_date, key_prefix):
     """2 input tanggal (mulai & akhir) dengan default sama2 min_date"""
     col1, col2 = st.columns(2)
     start_date = col1.date_input(
-        f"{label_prefix} - awal",
+        f"{label_prefix} awal",
         min_value=min_date, max_value=max_date,
         value=min_date, key=f"{key_prefix}_start"
     )
     end_date = col2.date_input(
-        f"{label_prefix} - akhir",
+        f"{label_prefix} akhir",
         min_value=min_date, max_value=max_date,
         value=min_date,   # 🔹 revisi: default ke min_date
         key=f"{key_prefix}_end"
