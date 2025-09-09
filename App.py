@@ -72,7 +72,7 @@ def get_status(row):
     else:                          return "Pengajuan Awal"
 
 def dual_date_input(label_prefix, min_date, max_date, key_prefix):
-    """2 input tanggal (mulai & akhir)"""
+    """2 input tanggal (mulai & akhir) dengan default sama2 min_date"""
     col1, col2 = st.columns(2)
     start_date = col1.date_input(
         f"{label_prefix} - Mulai",
@@ -82,7 +82,8 @@ def dual_date_input(label_prefix, min_date, max_date, key_prefix):
     end_date = col2.date_input(
         f"{label_prefix} - Akhir",
         min_value=min_date, max_value=max_date,
-        value=max_date, key=f"{key_prefix}_end"
+        value=min_date,   # 🔹 revisi: default ke min_date
+        key=f"{key_prefix}_end"
     )
     if start_date > end_date:
         st.warning("⚠️ Tanggal mulai tidak boleh lebih besar dari tanggal akhir.")
