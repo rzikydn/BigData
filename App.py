@@ -182,10 +182,11 @@ with tab2:
 
     colB, colC = st.columns(2)
     with colB:
-        stat_card(f"Total Peserta (Notion - {selected_sertifikasi})", int(total_peserta_notion), "⭐")
-    with colC:
-        stat_card(f"Total Selesai (Basys - {selected_sertifikasi})", int(total_selesai_filtered), "✅")
+        start_card("Total pemohon notion", int(total_peserta_notion), "⭐")
 
+    with colC:
+        start_card("Total peserta basys", int(total_selesai_filtered), "✅")
+    
     # Chart
     df_notion_month = (
         filtered_notion_chart
