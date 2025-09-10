@@ -200,9 +200,20 @@ with tab2:
     df_compare = pd.merge(df_notion_month, df_bigdata_month, on="date certification", how="outer").fillna(0)
     df_compare["date certification"] = df_compare["date certification"].astype(str)
 
-    fig_line = px.line(df_compare, x="date certification", y=["pendaftar", "selesai"],
-                       markers=True, title="PERBANDINGAN DATA NOTION DAN BASYS")
-    st.plotly_chart(fig_line, use_container_width=True)
+    fig_line = px.line(
+    df_compare,
+    x="date certification",
+    y=["pendaftar", "selesai"],
+    markers=True,
+    title="PERBANDINGAN DATA NOTION DAN BASYS",
+    color_discrete_map={
+        "pendaftar": "yellow",
+        "selesai": "green"
+    }
+)
+
+st.plotly_chart(fig_line, use_container_width=True)
+
 
 # ===== Tab 3: By Institution =====
 with tab3:
