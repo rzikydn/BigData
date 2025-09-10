@@ -149,7 +149,7 @@ with tab2:
     st.subheader("VISUALISASI DATA PERBANDINGAN DATA NOTION & BASYS")
 
     sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
-    selected_sertifikasi = st.selectbox("🏢 Pilih Nama Instansi :", sertifikasi_options)
+    selected_sertifikasi = st.selectbox("Instansi :", sertifikasi_options)
 
     if selected_sertifikasi != "Semua":
         df_notion_filtered = df_notion[df_notion["nama sertifikasi"] == selected_sertifikasi]
@@ -158,7 +158,7 @@ with tab2:
 
     min_date_notion = df_notion_filtered["date certification"].min().date()
     max_date_notion = df_notion_filtered["date certification"].max().date()
-    start_date, end_date = dual_date_input("📅 Pilih tanggal", min_date_notion, max_date_notion, key_prefix="notion")
+    start_date, end_date = dual_date_input("Pilih tanggal", min_date_notion, max_date_notion, key_prefix="notion")
 
     # === Filter BigData
     filtered_bigdata_same_date = df_bigdata[
