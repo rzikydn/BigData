@@ -108,7 +108,7 @@ with tab1:
     jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis_overview")
+    sel_jenis = col1.selectbox("Jenis sertifikasi", jenis_list, key="jenis_overview")
     sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi_overview")
 
     # Filter data
