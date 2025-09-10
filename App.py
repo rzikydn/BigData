@@ -136,7 +136,7 @@ with tab1:
         .sum().reset_index(name="Jumlah")
     )
     df_month["date certification"] = df_month["date certification"].astype(str)
-    fig_over = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
+    fig_over = px.bar(df_month, x="Date certification", y="Jumlah", text="Jumlah",
                       title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN BERDASARKAN DATA BASYS", height=500)
     fig_over.update_traces(textposition="outside")
     st.plotly_chart(fig_over, use_container_width=True)
