@@ -233,30 +233,20 @@ with tab3:
         .sort_values("pendaftar", ascending=True)
     )
 
-    fig_lolli = go.Figure()
-    # Titik (marker) di atas baris instansi
-fig_lolli.add_trace(go.Scatter(
-    x=top_instansi["instansi"],
-    y=top_instansi["pendaftar"],
-    mode='markers',
-    marker=dict(size=12, color="orange"),
-    name='Jumlah Pendaftar'
-))
-
-# Garis tegak (vertikal) dari sumbu ke titik
-fig_lolli.add_trace(go.Scatter(
-    x=top_instansi["instansi"],
-    y=top_instansi["pendaftar"],
-    mode='lines',
-    line=dict(color='gray', width=2),
-    showlegend=False
-))
-
-fig_lolli.update_layout(
+    fig_inst = px.bar(
+    top_instansi,
+    x="instansi",
+    y="pendaftar",
     title="TOP 5 INSTANSI BERDASARKAN DATA BASYS",
-    xaxis_title="Instansi",
-    yaxis_title="Jumlah Pendaftar",
-    showlegend=False
+    text_auto=True,      # kasih angka di atas bar
+    color="instansi"     # biar tiap instansi beda warna
 )
 
-st.plotly_chart(fig_lolli, use_container_width=True)
+fig_inst.update_layout(
+    xaxis_title="Instansi",
+    yaxis_title="Jumlah Pendaftar",
+    showlegend=False,
+    xaxis_tickangle=-30  # biar label miring rapi
+)
+
+st.plotly_chart(fig_inst, use_container_width=True)
