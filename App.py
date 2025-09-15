@@ -109,7 +109,7 @@ with tab1:
     instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
     col1, col2 = st.columns(2)
     sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis_overview")
-    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi_overview")
+    sel_instansi = col2.selectbox("instansi", instansi_list, key="instansi_overview")
 
     # Filter data
     filtered_df = df_bigdata[
@@ -147,7 +147,7 @@ with tab2:
     st.subheader("VISUALISASI DATA PERBANDINGAN DATA NOTION & BASYS")
 
     sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
-    selected_sertifikasi = st.selectbox("🏢 Pilih Nama Instansi :", sertifikasi_options)
+    selected_sertifikasi = st.selectbox("🏢 Pilih nama instansi :", sertifikasi_options)
 
     if selected_sertifikasi != "Semua":
         df_notion_filtered = df_notion[df_notion["nama sertifikasi"] == selected_sertifikasi]
