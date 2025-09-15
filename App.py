@@ -1,5 +1,5 @@
 # ==========================================================
-# Streamlit Dashboard Sertifikasi - Supabase
+# Streamlit Dashboard Sertifikasi - Supabase (Final Revisi)
 # Layout: Tabs (Overview, By Notion, By Institution)
 # ==========================================================
 
@@ -71,250 +71,180 @@ def get_status(row):
     elif row["dibatalkan"] > 0:    return "Dibatalkan"
     else:                          return "Pengajuan Awal"
 
-def safe_date_input(label, min_date, max_date, key):
-    """Pastikan date_input tidak error kalau min=max"""
-    if min_date == max_date:
-        return st.date_input(label, min_date, min_value=min_date, max_value=max_date, key=key)
-    else:
-        return st.date_input(label, (min_date, max_date), min_value=min_date, max_value=max_date, key=key)
+def dual_date_input(label_prefix, min_date, max_date, key_prefix):
+    """2 input tanggal (mulai & akhir) dengan validasi wajib isi keduanya"""
+    col1, col2 = st.columns(2)
+
+    start_date = col1.date_input(
+        f"{label_prefix} - Mulai",
+        min_value=min_date, max_value=max_date,
+        value=None,
+        key=f"{key_prefix}_start"
+    )
+
+    end_date = col2.date_input(
+        f"{label_prefix} - Akhir",
+        min_value=min_date, max_value=max_date,
+        value=None,
+        key=f"{key_prefix}_end"
+    )
+
+    # Validasi input
+    if not start_date or not end_date:
+        st.warning("⚠️ Silakan pilih tanggal mulai dan tanggal akhir terlebih dahulu.")
+        return None, None
+
+    if start_date > end_date:
+        st.warning("⚠️ Tanggal mulai tidak boleh lebih besar dari tanggal akhir.")
+        return None, None
+
+    return start_date, end_date
 
 # =========================
 # 5. Tabs Layout
 # =========================
 st.title("📊 DASHBOARD SERTIFIKASI")
 st.markdown("---")
-tab1, tab2, tab3 = st.tabs(["📈 Overview", "✍ By Notion", "🏛 By Institution"])
+tab1, tab2, tab3 = st.tabs(["📈 Overview", "✍️ By Notion", "🏛️ By Institution"])
 
 # ===== Tab 1: Overview =====
 with tab1:
-    df_tab1 = df_bigdata.copy()
-
     st.subheader("VISUALISASI DATA SERTIFIKASI BY BASYS")
 
-    #-- Filter Tanggal--#
-    min_date = df_tab1["date certification"].min().date()
-    max_date = df_tab1["date certification"].max().date()
-    sel_date = safe_date_input("📅 Pilih rentang tanggal :", min_date, max_date, key="date_overview")
+    min_date = df_bigdata["date certification"].min().date()
+    max_date = df_bigdata["date certification"].max().date()
+    start_date, end_date = dual_date_input("📅 Pilih Tanggal", min_date, max_date, key_prefix="overview")
 
-    if isinstance(sel_date, tuple):
-        start_date, end_date = sel_date
-    else:
-        start_date, end_date = sel_date, sel_date
+    if start_date and end_date:
+        jenis_list = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
+        instansi_list = ["All"] + sorted(df_bigdata["instansi"].dropna().unique())
+        col1, col2 = st.columns(2)
+        sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis_overview")
+        sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi_overview")
 
-    jenis_list = ["All"] + sorted(df_tab1["jenis sertifikasi"].dropna().unique())
-    instansi_list = ["All"] + sorted(df_tab1["instansi"].dropna().unique())
-    col1, col2 = st.columns(2)
-    sel_jenis = col1.selectbox("Jenis Sertifikasi", jenis_list, key="jenis_overview")
-    sel_instansi = col2.selectbox("Instansi", instansi_list, key="instansi_overview")
+        filtered_df = df_bigdata[
+            (df_bigdata["date certification"].dt.date >= start_date) &
+            (df_bigdata["date certification"].dt.date <= end_date)
+        ]
+        if sel_jenis != "All":
+            filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == sel_jenis]
+        if sel_instansi != "All":
+            filtered_df = filtered_df[filtered_df["instansi"] == sel_instansi]
+        filtered_df["status"] = filtered_df.apply(get_status, axis=1)
 
-    # Filter data
-    filtered_df = df_tab1[
-        (df_tab1["date certification"].dt.date >= start_date) &
-        (df_tab1["date certification"].dt.date <= end_date)
-    ]
-    if sel_jenis != "All":
-        filtered_df = filtered_df[filtered_df["jenis sertifikasi"] == sel_jenis]
-    if sel_instansi != "All":
-        filtered_df = filtered_df[filtered_df["instansi"] == sel_instansi]
-    filtered_df["status"] = filtered_df.apply(get_status, axis=1)
+        # Stat cards
+        stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(), "👥")
+        stat_card("Pengajuan Awal", filtered_df["pengajuan awal"].sum(), "📌")
+        stat_card("On Progress", filtered_df["on progress"].sum(), "⏳")
+        stat_card("Total Dibatalkan", filtered_df["dibatalkan"].sum(), "❌")
+        stat_card("Selesai", filtered_df["selesai"].sum(), "✅")
 
-    # Stat cards
-    stat_card("Total Pendaftar", filtered_df["pendaftar"].sum(), "👥")
-    stat_card("Pengajuan Awal", filtered_df["pengajuan awal"].sum(), "📌")
-    stat_card("On Progress", filtered_df["on progress"].sum(), "⏳")
-    stat_card("Total Dibatalkan", filtered_df["dibatalkan"].sum(), "❌")
-    stat_card("Selesai", filtered_df["selesai"].sum(), "✅")
-
-    # Chart
-    df_month = (
-        filtered_df
-        .groupby(filtered_df["date certification"].dt.to_period("M"))["pendaftar"]
-        .sum().reset_index(name="Jumlah")
-    )
-    df_month["date certification"] = df_month["date certification"].astype(str)
-    fig_over = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
-                      title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN BERDASARKAN DATA BASYS", height=500)
-    fig_over.update_traces(textposition="outside")
-    st.plotly_chart(fig_over, use_container_width=True, key="bar_tab1")
-
-    # Info box
-    with st.expander("🔽 FUNGSI BAGIAN INI", expanded=True):
-        st.markdown("""
-        Pada bagian overview ini berguna untuk menampilkan ringkasan keseluruhan data sertifikasi sesuai rentang tanggal, jenis sertifikasi, dan instansi yang dipilih.
-        """)
+        # Chart
+        df_month = (
+            filtered_df
+            .groupby(filtered_df["date certification"].dt.to_period("M"))["pendaftar"]
+            .sum().reset_index(name="Jumlah")
+        )
+        df_month["date certification"] = df_month["date certification"].astype(str)
+        fig_over = px.bar(df_month, x="date certification", y="Jumlah", text="Jumlah",
+                          title="TOTAL PENDAFTAR SERTIFIKASI PERBULAN BERDASARKAN DATA BASYS", height=500)
+        fig_over.update_traces(textposition="outside")
+        st.plotly_chart(fig_over, use_container_width=True)
 
 # ===== Tab 2: By Notion =====
 with tab2:
-    df_tab2_notion = df_notion.copy()
-    df_tab2_bigdata = df_bigdata.copy()
-
     st.subheader("VISUALISASI DATA PERBANDINGAN DATA NOTION & BASYS")
 
-    # === Dropdown filter berdasarkan nama sertifikasi (Notion) ===
-    sertifikasi_options = ["Semua"] + sorted(df_tab2_notion["nama sertifikasi"].dropna().unique().tolist())
+    sertifikasi_options = ["Semua"] + sorted(df_notion["nama sertifikasi"].dropna().unique().tolist())
     selected_sertifikasi = st.selectbox("🏢 Pilih Nama Instansi :", sertifikasi_options)
 
-    # Filter data notion sesuai pilihan
     if selected_sertifikasi != "Semua":
-        df_notion_filtered = df_tab2_notion[df_tab2_notion["nama sertifikasi"] == selected_sertifikasi]
+        df_notion_filtered = df_notion[df_notion["nama sertifikasi"] == selected_sertifikasi]
     else:
-        df_notion_filtered = df_tab2_notion.copy()
+        df_notion_filtered = df_notion.copy()
 
-    # === Date filter berdasarkan data terfilter ===
     min_date_notion = df_notion_filtered["date certification"].min().date()
     max_date_notion = df_notion_filtered["date certification"].max().date()
-    sel_date_notion = safe_date_input("📅 Pilih rentang tanggal :", min_date_notion, max_date_notion, key="date_notion")
+    start_date, end_date = dual_date_input("📅 Pilih Tanggal", min_date_notion, max_date_notion, key_prefix="notion")
 
-    if isinstance(sel_date_notion, tuple):
-        start_date, end_date = sel_date_notion
-    else:
-        start_date, end_date = sel_date_notion, sel_date_notion
+    if start_date and end_date:
+        filtered_bigdata_same_date = df_bigdata[
+            (df_bigdata["date certification"].dt.date >= start_date) &
+            (df_bigdata["date certification"].dt.date <= end_date)
+        ]
+        if selected_sertifikasi != "Semua":
+            filtered_bigdata_same_date = filtered_bigdata_same_date[
+                filtered_bigdata_same_date["instansi"] == selected_sertifikasi
+            ]
 
-    # === Filter BigData (ikut tanggal & instansi bila dipilih) ===
-    filtered_bigdata_same_date = df_tab2_bigdata[
-        (df_tab2_bigdata["date certification"].dt.date >= start_date) &
-        (df_tab2_bigdata["date certification"].dt.date <= end_date)
-    ]
-    if selected_sertifikasi != "Semua":
-        filtered_bigdata_same_date = filtered_bigdata_same_date[
-            filtered_bigdata_same_date["instansi"] == selected_sertifikasi
+        filtered_notion_chart = df_notion_filtered[
+            (df_notion_filtered["date certification"].dt.date >= start_date) &
+            (df_notion_filtered["date certification"].dt.date <= end_date)
         ]
 
-    # === Filter Notion chart ===
-    filtered_notion_chart = df_notion_filtered[
-        (df_notion_filtered["date certification"].dt.date >= start_date) &
-        (df_notion_filtered["date certification"].dt.date <= end_date)
-    ]
+        total_peserta_notion = filtered_notion_chart["peserta"].sum()
+        total_selesai_filtered = filtered_bigdata_same_date["selesai"].sum()
 
-    # Pastikan numeric
-    df_notion_filtered["peserta"] = pd.to_numeric(df_notion_filtered["peserta"], errors="coerce").fillna(0)
-    df_tab2_bigdata["selesai"] = pd.to_numeric(df_tab2_bigdata["selesai"], errors="coerce").fillna(0)
+        colB, colC = st.columns(2)
+        with colB:
+            stat_card(f"Total Peserta (Notion - {selected_sertifikasi})", int(total_peserta_notion), "⭐")
+        with colC:
+            stat_card(f"Total Selesai (Basys - {selected_sertifikasi})", int(total_selesai_filtered), "✅")
 
-    # Hitung total peserta (Notion)
-    total_peserta_notion = df_notion_filtered.loc[
-        df_notion_filtered["date certification"].between(pd.to_datetime(start_date), pd.to_datetime(end_date)),
-        "peserta"
-    ].sum()
-
-    # Hitung total selesai (Basys)
-    total_selesai_filtered = filtered_bigdata_same_date["selesai"].sum()
-
-    # === Stat Cards ===
-    colB, colC = st.columns(2)
-    with colB:
-        stat_card(
-            f"Total Peserta (Notion - {selected_sertifikasi if selected_sertifikasi!='Semua' else 'Semua'})",
-            int(total_peserta_notion),
-            "⭐"
+        # Chart
+        df_notion_month = (
+            filtered_notion_chart
+            .groupby(filtered_notion_chart["date certification"].dt.to_period("M"))["peserta"]
+            .sum().reset_index(name="pendaftar")
         )
-    with colC:
-        stat_card(
-            f"Total Selesai (Basys - {selected_sertifikasi if selected_sertifikasi!='Semua' else 'Semua'})",
-            int(total_selesai_filtered),
-            "✅"
+        df_bigdata_month = (
+            filtered_bigdata_same_date
+            .groupby(filtered_bigdata_same_date["date certification"].dt.to_period("M"))["selesai"]
+            .sum().reset_index(name="selesai")
         )
+        df_compare = pd.merge(df_notion_month, df_bigdata_month, on="date certification", how="outer").fillna(0)
+        df_compare["date certification"] = df_compare["date certification"].astype(str)
 
-    # === Chart Notion vs Basys per bulan ===
-    df_notion_month = (
-        filtered_notion_chart
-        .groupby(filtered_notion_chart["date certification"].dt.to_period("M"))["peserta"]
-        .sum()
-        .reset_index(name="pendaftar")
-    )
-    df_bigdata_month = (
-        filtered_bigdata_same_date
-        .groupby(filtered_bigdata_same_date["date certification"].dt.to_period("M"))["selesai"]
-        .sum()
-        .reset_index(name="selesai")
-    )
-
-    df_compare = pd.merge(
-        df_notion_month, df_bigdata_month,
-        left_on="date certification", right_on="date certification",
-        how="outer"
-    ).fillna(0)
-    df_compare["date certification"] = df_compare["date certification"].astype(str)
-
-    fig_line = px.line(
-        df_compare,
-        x="date certification",
-        y=["pendaftar", "selesai"],
-        markers=True,
-        title="PERBANDINGAN DATA NOTION DAN BASYS"
-    )
-    st.plotly_chart(fig_line, use_container_width=True, key="line_tab2")
-
-    with st.expander("🔽 FUNGSI BAGIAN INI", expanded=True):
-        st.markdown("""
-        Bagian ini menampilkan perbandingan data Notion dan Basys.
-        """)
+        fig_line = px.line(df_compare, x="date certification", y=["pendaftar", "selesai"],
+                           markers=True, title="PERBANDINGAN DATA NOTION DAN BASYS")
+        st.plotly_chart(fig_line, use_container_width=True)
 
 # ===== Tab 3: By Institution =====
 with tab3:
-    df_tab3 = df_bigdata.copy()
-
     st.subheader("VISUALISASI DATA TOP 5 INSTANSI")
- 
-    min_date_inst = df_tab3["date certification"].min().date()
-    max_date_inst = df_tab3["date certification"].max().date()
-    sel_date_inst = safe_date_input("📅 Pilih rentang tanggal :", min_date_inst, max_date_inst, key="date_institution")
 
-    if isinstance(sel_date_inst, tuple):
-        start_date, end_date = sel_date_inst
-    else:
-        start_date, end_date = sel_date_inst, sel_date_inst
+    min_date_inst = df_bigdata["date certification"].min().date()
+    max_date_inst = df_bigdata["date certification"].max().date()
+    start_date, end_date = dual_date_input("📅 Pilih Tanggal", min_date_inst, max_date_inst, key_prefix="institution")
 
-    # Filter data
-    filtered_df_inst = df_tab3[
-        (df_tab3["date certification"].dt.date >= start_date) &
-        (df_tab3["date certification"].dt.date <= end_date)
-    ]
+    if start_date and end_date:
+        filtered_df_inst = df_bigdata[
+            (df_bigdata["date certification"].dt.date >= start_date) &
+            (df_bigdata["date certification"].dt.date <= end_date)
+        ]
 
-    jenis_list_inst = ["All"] + sorted(df_tab3["jenis sertifikasi"].dropna().unique())
-    sel_jenis_inst = st.selectbox("Jenis Sertifikasi", jenis_list_inst, key="jenis_institution")
+        jenis_list_inst = ["All"] + sorted(df_bigdata["jenis sertifikasi"].dropna().unique())
+        sel_jenis_inst = st.selectbox("Jenis Sertifikasi", jenis_list_inst, key="jenis_institution")
+        if sel_jenis_inst != "All":
+            filtered_df_inst = filtered_df_inst[filtered_df_inst["jenis sertifikasi"] == sel_jenis_inst]
 
-    if sel_jenis_inst != "All":
-        filtered_df_inst = filtered_df_inst[filtered_df_inst["jenis sertifikasi"] == sel_jenis_inst]
+        colA, colB = st.columns(2)
+        with colA:
+            stat_card("Total Pendaftar", filtered_df_inst["pendaftar"].sum(), "👥")
+        with colB:
+            stat_card("Selesai", filtered_df_inst["selesai"].sum(), "✅")
 
-    # Stat cards
-    colA, colB = st.columns(2)
-    with colA:
-        stat_card("Total Pendaftar", filtered_df_inst["pendaftar"].sum(), "👥")
-    with colB:
-        stat_card("Selesai", filtered_df_inst["selesai"].sum(), "✅")
+        top_instansi = (
+            filtered_df_inst.groupby("instansi")["pendaftar"].sum()
+            .reset_index().sort_values("pendaftar", ascending=False).head(5)
+            .sort_values("pendaftar", ascending=True)
+        )
 
-    # Top 5 instansi
-    top_instansi = (
-        filtered_df_inst.groupby("instansi")["pendaftar"].sum()
-        .reset_index().sort_values("pendaftar", ascending=False).head(5)
-        .sort_values("pendaftar", ascending=True)
-    )
-
-    # Lollipop chart
-    fig_lolli = go.Figure()
-    fig_lolli.add_trace(go.Scatter(
-        x=top_instansi["pendaftar"],
-        y=top_instansi["instansi"],
-        mode='markers',
-        marker=dict(size=12),
-        name='Jumlah Pendaftar'
-    ))
-    fig_lolli.add_trace(go.Scatter(
-        x=top_instansi["pendaftar"],
-        y=top_instansi["instansi"],
-        mode='lines',
-        line=dict(color='gray', width=2),
-        showlegend=False
-    ))
-    fig_lolli.update_layout(
-        title="TOP 5 INSTANSI BERDASARKAN DATA BASYS PESERTA DAN SELESAI",
-        xaxis_title="Jumlah Pendaftar",
-        yaxis_title="",
-        showlegend=False
-    )
-    st.plotly_chart(fig_lolli, use_container_width=True, key="lolli_tab3")
-
-    with st.expander("🔽 Fungsi Bagian Ini", expanded=True):
-        st.markdown("""
-        Menampilkan 5 instansi dengan jumlah pendaftar terbanyak.
-        """)
+        fig_lolli = go.Figure()
+        fig_lolli.add_trace(go.Scatter(x=top_instansi["pendaftar"], y=top_instansi["instansi"],
+                                       mode='markers', marker=dict(size=12), name='Jumlah Pendaftar'))
+        fig_lolli.add_trace(go.Scatter(x=top_instansi["pendaftar"], y=top_instansi["instansi"],
+                                       mode='lines', line=dict(color='gray', width=2), showlegend=False))
+        fig_lolli.update_layout(title="TOP 5 INSTANSI BERDASARKAN DATA BASYS",
+                                xaxis_title="Jumlah Pendaftar", yaxis_title="", showlegend=False)
+        st.plotly_chart(fig_lolli, use_container_width=True)
